@@ -89,7 +89,7 @@ export function UserFormModal({
             onChange={(e) => setPassword(e.target.value)}
             className="rounded-xl bg-slate-900 p-3 text-base outline-none"
             required={!isEdit}
-            minLength={8}
+            minLength={4}
           />
 
           {error && (
