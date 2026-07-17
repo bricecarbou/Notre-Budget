@@ -6,7 +6,7 @@
   "main": "dist/server.js",
   "scripts": {
     "dev": "tsx watch src/server.ts",
-    "build": "tsc && npx prisma generate",
+    "build": "npx prisma generate && tsc",
     "start": "npx prisma migrate deploy && npm run seed && node dist/server.js",
     "seed": "tsx prisma/seed.ts",
     "lint": "eslint src --ext .ts",
