@@ -5,6 +5,15 @@ export interface UserSummary {
   name: string;
 }
 
+export interface User {
+  id: string;
+  login: string;
+  name: string;
+  role: Role;
+  active: boolean;
+  createdAt: string;
+}
+
 export interface Category {
   id: string;
   name: string;
@@ -51,6 +60,7 @@ export interface ExpenseTemplate {
   categoryId: string;
   category?: Category;
   subcategoryId: string | null;
+  subcategory?: Subcategory | null;
   createdBy: UserSummary;
 }
 
@@ -85,4 +95,21 @@ export interface Dashboard {
   totalDepensesPonctuelles: number;
   resteAVivreActuel: number;
   transactionsRecentes: Transaction[];
+}
+
+export interface MonthlyTrendPoint {
+  year: number;
+  month: number;
+  totalRevenus: number;
+  totalDepensesRecurrentes: number;
+  totalDepensesPonctuelles: number;
+  resteAVivreActuel: number;
+}
+
+export interface CategoryBreakdown {
+  categoryId: string;
+  categoryName: string;
+  color: string | null;
+  amount: number;
+  percentage: number;
 }
