@@ -1,1 +1,1 @@
-Place `icon-192.png` and `icon-512.png` (maskable, fond `#0f172a`) ici avant le build de production — référencés par `vite.config.ts` (manifest PWA) et `index.html`.
+`icon-192.png` et `icon-512.png` sont des icônes placeholder générées automatiquement (fond `#0f172a`, cercle bleu, "NB"). Remplace-les par ta propre icône/logo quand tu en as un — même noms de fichiers, mêmes dimensions.

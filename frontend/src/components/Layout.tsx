@@ -3,6 +3,7 @@ import { Outlet } from "react-router-dom";
 import { TopBar } from "./TopBar";
 import { BottomNav } from "./BottomNav";
 import { ExpenseQuickAdd } from "./ExpenseQuickAdd";
+import { InstallAppBanner } from "./InstallAppBanner";
 
 export function Layout() {
   const [showQuickAdd, setShowQuickAdd] = useState(false);
@@ -10,6 +11,7 @@ export function Layout() {
   return (
     <div className="mx-auto min-h-screen max-w-md pb-[calc(6rem+env(safe-area-inset-bottom))]">
       <TopBar />
+      <InstallAppBanner />
       <main className="p-4">
         <Outlet />
       </main>
