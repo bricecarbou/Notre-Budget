@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { requireAuth } from "../middlewares/requireAuth";
+import { requireUser } from "../middlewares/requireUser";
 import {
   listHandler,
   createHandler,
@@ -12,8 +13,8 @@ const router = Router();
 router.use(requireAuth);
 
 router.get("/", listHandler);
-router.post("/", createHandler);
-router.patch("/:id", updateHandler);
-router.delete("/:id", deleteHandler);
+router.post("/", requireUser, createHandler);
+router.patch("/:id", requireUser, updateHandler);
+router.delete("/:id", requireUser, deleteHandler);
 
 export default router;

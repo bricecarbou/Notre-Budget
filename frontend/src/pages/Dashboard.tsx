@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Plus } from "lucide-react";
 import { useMonthStore } from "@/store/monthStore";
 import { useDashboard } from "@/hooks/useDashboard";
+import { useAuthStore } from "@/store/authStore";
 import { MonthSelector } from "@/components/MonthSelector";
 import { BudgetSummaryCard } from "@/components/BudgetSummaryCard";
 import { TransactionsList } from "@/components/TransactionsList";
@@ -10,6 +11,7 @@ import { IncomeAdd } from "@/components/IncomeAdd";
 export function Dashboard() {
   const { year, month } = useMonthStore();
   const { data: dashboard, isLoading, isError } = useDashboard(year, month);
+  const isAdmin = useAuthStore((s) => s.user?.role === "ADMIN");
   const [showIncomeAdd, setShowIncomeAdd] = useState(false);
 
   return (
@@ -25,12 +27,14 @@ export function Dashboard() {
         <>
           <BudgetSummaryCard dashboard={dashboard} />
 
-          <button
-            onClick={() => setShowIncomeAdd(true)}
-            className="mt-3 flex w-full items-center justify-center gap-1 rounded-xl border border-dashed border-slate-700 py-2 text-sm text-slate-400"
-          >
-            <Plus size={16} /> Ajouter un revenu
-          </button>
+          {!isAdmin && (
+            <button
+              onClick={() => setShowIncomeAdd(true)}
+              className="mt-3 flex w-full items-center justify-center gap-1 rounded-xl border border-dashed border-slate-700 py-2 text-sm text-slate-400"
+            >
+              <Plus size={16} /> Ajouter un revenu
+            </button>
+          )}
 
           <h2 className="mb-2 mt-6 text-sm font-medium text-slate-400">
             Dernières transactions

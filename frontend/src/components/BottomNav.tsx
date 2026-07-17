@@ -21,13 +21,15 @@ export function BottomNav({ onAddClick }: { onAddClick: () => void }) {
         Analyses
       </NavLink>
 
-      <button
-        onClick={onAddClick}
-        className="-mt-6 flex h-14 w-14 items-center justify-center rounded-full bg-blue-500 text-white shadow-lg shadow-blue-500/30"
-        aria-label="Ajouter une dépense"
-      >
-        <Plus size={28} />
-      </button>
+      {!isAdmin && (
+        <button
+          onClick={onAddClick}
+          className="-mt-6 flex h-14 w-14 items-center justify-center rounded-full bg-blue-500 text-white shadow-lg shadow-blue-500/30"
+          aria-label="Ajouter une dépense"
+        >
+          <Plus size={28} />
+        </button>
+      )}
 
       <NavLink to="/recurring" className={linkClass}>
         <Repeat size={20} />
