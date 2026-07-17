@@ -1,4 +1,4 @@
-import { CATEGORICAL_COLORS } from "@/lib/chartTokens";
+import { CategoryIcon } from "@/lib/categoryIcon";
 import type { CategoryBreakdown } from "@/types";
 
 function formatEuros(amount: number) {
@@ -11,14 +11,11 @@ export function CategoryBreakdownTable({ breakdown }: { breakdown: CategoryBreak
   return (
     <table className="mt-4 w-full text-sm">
       <tbody className="divide-y divide-slate-800">
-        {breakdown.map((c, i) => (
+        {breakdown.map((c) => (
           <tr key={c.categoryId}>
             <td className="py-2 pr-2">
               <span className="flex items-center gap-2">
-                <span
-                  className="h-2.5 w-2.5 shrink-0 rounded-full"
-                  style={{ backgroundColor: CATEGORICAL_COLORS[i % CATEGORICAL_COLORS.length] }}
-                />
+                <CategoryIcon icon={c.icon} color={c.color} size={14} />
                 {c.categoryName}
               </span>
             </td>

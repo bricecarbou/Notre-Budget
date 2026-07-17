@@ -6,6 +6,7 @@ import {
   useDeleteExpenseTemplate,
 } from "@/hooks/useExpenseTemplates";
 import { useAuthStore } from "@/store/authStore";
+import { CategoryIcon } from "@/lib/categoryIcon";
 import { ExpenseTemplateFormModal } from "./ExpenseTemplateFormModal";
 import type { ExpenseTemplate } from "@/types";
 
@@ -41,8 +42,9 @@ export function ExpenseTemplatesList() {
 
       <ul className="divide-y divide-slate-800">
         {templates.map((t) => (
-          <li key={t.id} className="flex items-center justify-between py-3">
-            <div>
+          <li key={t.id} className="flex items-center gap-3 py-3">
+            <CategoryIcon icon={t.category?.icon} color={t.category?.color} />
+            <div className="flex-1">
               <div className="flex items-center gap-2 font-medium">
                 {t.label}
                 {!t.active && (

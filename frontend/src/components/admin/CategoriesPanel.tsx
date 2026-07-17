@@ -7,6 +7,7 @@ import {
   useDeleteSubcategory,
 } from "@/hooks/useCategories";
 import { CategoryFormModal } from "./CategoryFormModal";
+import { CategoryIcon } from "@/lib/categoryIcon";
 import type { Category } from "@/types";
 
 function SubcategoryAddRow({ categoryId }: { categoryId: string }) {
@@ -82,10 +83,7 @@ function CategoryRow({ category }: { category: Category }) {
           className="flex items-center gap-2 text-left"
         >
           {expanded ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
-          <span
-            className="h-2.5 w-2.5 rounded-full"
-            style={{ backgroundColor: category.color ?? "#475569" }}
-          />
+          <CategoryIcon icon={category.icon} color={category.color} size={14} />
           <span className="font-medium">{category.name}</span>
           {category.isDefault && (
             <span className="rounded-full bg-slate-800 px-2 py-0.5 text-[10px] text-slate-400">

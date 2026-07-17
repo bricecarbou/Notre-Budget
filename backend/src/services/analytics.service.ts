@@ -65,6 +65,7 @@ export async function getByCategory(year: number, month: number) {
       return {
         categoryId: c.id,
         categoryName: c.name,
+        icon: c.icon,
         color: c.color,
         amount,
         percentage: totalDepenses > 0 ? (amount / totalDepenses) * 100 : 0,

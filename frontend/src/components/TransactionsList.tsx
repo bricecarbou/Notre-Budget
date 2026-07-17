@@ -1,3 +1,5 @@
+import { PiggyBank } from "lucide-react";
+import { CategoryIcon } from "@/lib/categoryIcon";
 import type { Transaction } from "@/types";
 
 function formatEuros(amount: number) {
@@ -16,8 +18,16 @@ export function TransactionsList({ transactions }: { transactions: Transaction[]
   return (
     <ul className="divide-y divide-slate-800">
       {transactions.map((t) => (
-        <li key={`${t.type}-${t.id}`} className="flex items-center justify-between py-3">
-          <div>
+        <li key={`${t.type}-${t.id}`} className="flex items-center gap-3 py-3">
+          {t.type === "income" ? (
+            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-emerald-500">
+              <PiggyBank size={18} className="text-white" strokeWidth={2.25} />
+            </span>
+          ) : (
+            <CategoryIcon icon={t.category?.icon} color={t.category?.color} />
+          )}
+
+          <div className="flex-1">
             <div className="font-medium">
               {t.label || t.category?.name || "Transaction"}
             </div>

@@ -109,6 +109,7 @@ export interface MonthlyTrendPoint {
 export interface CategoryBreakdown {
   categoryId: string;
   categoryName: string;
+  icon: string | null;
   color: string | null;
   amount: number;
   percentage: number;

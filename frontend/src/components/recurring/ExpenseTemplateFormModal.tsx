@@ -5,7 +5,8 @@ import {
   useCreateExpenseTemplate,
   useUpdateExpenseTemplate,
 } from "@/hooks/useExpenseTemplates";
-import type { ExpenseTemplate } from "@/types";
+import { CategoryGrid } from "@/components/CategoryGrid";
+import type { Category, ExpenseTemplate } from "@/types";
 
 function todayISO() {
   return new Date().toISOString().slice(0, 10);
@@ -34,6 +35,11 @@ export function ExpenseTemplateFormModal({
   const pending = createTemplate.isPending || updateTemplate.isPending;
   const error = createTemplate.error || updateTemplate.error;
   const selectedCategory = categories.find((c) => c.id === categoryId);
+
+  function handleSelectCategory(c: Category) {
+    setCategoryId(c.id);
+    setSubcategoryId("");
+  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -93,38 +99,29 @@ export function ExpenseTemplateFormModal({
             required
           />
 
-          <select
-            value={categoryId}
-            onChange={(e) => {
-              setCategoryId(e.target.value);
-              setSubcategoryId("");
-            }}
-            className="rounded-xl bg-slate-900 p-3 text-base outline-none"
-            required
-          >
-            <option value="" disabled>
-              Choisir une catégorie
-            </option>
-            {categories.map((c) => (
-              <option key={c.id} value={c.id}>
-                {c.name}
-              </option>
-            ))}
-          </select>
+          <CategoryGrid
+            categories={categories}
+            selectedId={categoryId || null}
+            onSelect={handleSelectCategory}
+          />
 
           {selectedCategory && selectedCategory.subcategories.length > 0 && (
-            <select
-              value={subcategoryId}
-              onChange={(e) => setSubcategoryId(e.target.value)}
-              className="rounded-xl bg-slate-900 p-3 text-base outline-none"
-            >
-              <option value="">Sans sous-catégorie</option>
-              {selectedCategory.subcategories.map((s) => (
-                <option key={s.id} value={s.id}>
-                  {s.name}
-                </option>
+            <div className="flex flex-wrap gap-2">
+              {selectedCategory.subcategories.map((sub) => (
+                <button
+                  key={sub.id}
+                  type="button"
+                  onClick={() => setSubcategoryId(sub.id)}
+                  className={`rounded-full border px-3 py-1.5 text-xs ${
+                    subcategoryId === sub.id
+                      ? "border-blue-500 bg-blue-500/10 text-blue-300"
+                      : "border-slate-800 text-slate-300"
+                  }`}
+                >
+                  {sub.name}
+                </button>
               ))}
-            </select>
+            </div>
           )}
 
           <label className="text-xs text-slate-500">Jour du mois</label>

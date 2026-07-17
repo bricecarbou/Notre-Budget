@@ -1,8 +1,9 @@
 import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from "recharts";
-import { CATEGORICAL_COLORS, CHART_TOKENS } from "@/lib/chartTokens";
+import { CHART_TOKENS } from "@/lib/chartTokens";
+import { FALLBACK_CATEGORY_COLOR } from "@/lib/categoryIcon";
 import type { CategoryBreakdown } from "@/types";
 
-const MAX_SLICES = CATEGORICAL_COLORS.length;
+const MAX_SLICES = 8;
 
 function formatEuros(amount: number) {
   return amount.toLocaleString("fr-FR", { style: "currency", currency: "EUR" });
@@ -21,7 +22,8 @@ function foldIntoSlices(breakdown: CategoryBreakdown[]) {
     {
       categoryId: "__autres__",
       categoryName: "Autres",
-      color: null,
+      icon: null,
+      color: FALLBACK_CATEGORY_COLOR,
       amount: autresAmount,
       percentage: autresPct,
     },
@@ -69,8 +71,8 @@ export function CategoryBreakdownChart({ breakdown }: { breakdown: CategoryBreak
             stroke={CHART_TOKENS.surface}
             strokeWidth={2}
           >
-            {slices.map((slice, i) => (
-              <Cell key={slice.categoryId} fill={CATEGORICAL_COLORS[i % CATEGORICAL_COLORS.length]} />
+            {slices.map((slice) => (
+              <Cell key={slice.categoryId} fill={slice.color ?? FALLBACK_CATEGORY_COLOR} />
             ))}
           </Pie>
           <Tooltip content={<CustomTooltip />} />

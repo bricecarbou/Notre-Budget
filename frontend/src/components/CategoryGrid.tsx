@@ -1,21 +1,5 @@
-import * as LucideIcons from "lucide-react";
-import { Tag, type LucideIcon } from "lucide-react";
+import { resolveIcon, withAlpha, FALLBACK_CATEGORY_COLOR } from "@/lib/categoryIcon";
 import type { Category } from "@/types";
-
-const FALLBACK_COLOR = "#64748b";
-
-function resolveIcon(name: string | null): LucideIcon {
-  if (!name) return Tag;
-  const icons = LucideIcons as unknown as Record<string, LucideIcon>;
-  return icons[name] ?? Tag;
-}
-
-function withAlpha(hex: string, alpha: number) {
-  const a = Math.round(alpha * 255)
-    .toString(16)
-    .padStart(2, "0");
-  return `${hex}${a}`;
-}
 
 export function CategoryGrid({
   categories,
@@ -35,7 +19,7 @@ export function CategoryGrid({
     <div className="grid grid-cols-4 gap-3">
       {sorted.map((category) => {
         const Icon = resolveIcon(category.icon);
-        const color = category.color ?? FALLBACK_COLOR;
+        const color = category.color ?? FALLBACK_CATEGORY_COLOR;
         const selected = category.id === selectedId;
 
         return (
