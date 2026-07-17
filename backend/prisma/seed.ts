@@ -3,20 +3,40 @@ import bcrypt from "bcrypt";
 
 const prisma = new PrismaClient();
 
-const DEFAULT_CATEGORIES: { name: string; subcategories?: string[] }[] = [
-  { name: "Alimentaire" },
-  { name: "Logement" },
-  { name: "Transport" },
-  { name: "Assurances", subcategories: ["Maison", "Voiture", "Santé"] },
-  { name: "Crédits", subcategories: ["Immobilier", "Consommation"] },
+const DEFAULT_CATEGORIES: {
+  name: string;
+  icon: string;
+  color: string;
+  subcategories?: string[];
+}[] = [
+  { name: "Alimentaire", icon: "ShoppingCart", color: "#3987e5" },
+  { name: "Logement", icon: "Home", color: "#199e70" },
+  { name: "Transport", icon: "Car", color: "#c98500" },
+  {
+    name: "Assurances",
+    icon: "Shield",
+    color: "#008300",
+    subcategories: ["Maison", "Voiture", "Santé"],
+  },
+  {
+    name: "Crédits",
+    icon: "CreditCard",
+    color: "#9085e9",
+    subcategories: ["Immobilier", "Consommation"],
+  },
   {
     name: "Abonnements",
+    icon: "Repeat",
+    color: "#e66767",
     subcategories: ["Électricité", "Internet", "Téléphone", "Streaming"],
   },
-  { name: "Loisirs" },
-  { name: "Santé" },
-  { name: "Impôts" },
+  { name: "Loisirs", icon: "Ticket", color: "#d55181" },
+  { name: "Santé", icon: "HeartPulse", color: "#d95926" },
+  { name: "Impôts", icon: "Landmark", color: "#0891b2" },
 ];
+
+const AUTRES_ICON = "MoreHorizontal";
+const AUTRES_COLOR = "#64748b";
 
 async function seedAdmin() {
   const login = process.env.SEED_ADMIN_LOGIN;
@@ -48,20 +68,33 @@ async function seedAdmin() {
   console.log(`Admin ${login} créé.`);
 }
 
+// Ne backfill icon/color que s'ils sont encore vides, pour ne jamais écraser
+// une personnalisation faite depuis l'écran Admin.
+async function upsertCategoryWithDefaults(
+  name: string,
+  icon: string,
+  color: string,
+  isDefault: boolean
+) {
+  const existing = await prisma.category.findUnique({ where: { name } });
+  if (!existing) {
+    return prisma.category.create({ data: { name, icon, color, isDefault } });
+  }
+  if (!existing.icon || !existing.color) {
+    return prisma.category.update({
+      where: { name },
+      data: { icon: existing.icon ?? icon, color: existing.color ?? color },
+    });
+  }
+  return existing;
+}
+
 async function seedCategories() {
   // Catégorie "Autres" : protégée, non supprimable/renommable (voir API).
-  await prisma.category.upsert({
-    where: { name: "Autres" },
-    update: {},
-    create: { name: "Autres", isDefault: true },
-  });
+  await upsertCategoryWithDefaults("Autres", AUTRES_ICON, AUTRES_COLOR, true);
 
   for (const cat of DEFAULT_CATEGORIES) {
-    const category = await prisma.category.upsert({
-      where: { name: cat.name },
-      update: {},
-      create: { name: cat.name, isDefault: false },
-    });
+    const category = await upsertCategoryWithDefaults(cat.name, cat.icon, cat.color, false);
 
     for (const subName of cat.subcategories ?? []) {
       await prisma.subcategory.upsert({
