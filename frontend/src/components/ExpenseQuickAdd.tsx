@@ -1,35 +1,74 @@
-import { useState } from "react";
-import { X } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Trash2, X } from "lucide-react";
 import { useCategories } from "@/hooks/useCategories";
-import { useCreateExpense } from "@/hooks/useCreateExpense";
+import { useCreateExpense, useUpdateExpense, useDeleteExpense } from "@/hooks/useCreateExpense";
 import { CategoryGrid } from "./CategoryGrid";
 import type { Category, Subcategory } from "@/types";
+
+export interface EditableExpense {
+  id: string;
+  amount: number;
+  date: string;
+  label: string | null;
+  categoryId: string;
+  subcategoryId: string | null;
+}
 
 function todayISO() {
   return new Date().toISOString().slice(0, 10);
 }
 
-export function ExpenseQuickAdd({ onClose }: { onClose: () => void }) {
+export function ExpenseQuickAdd({
+  onClose,
+  expense = null,
+}: {
+  onClose: () => void;
+  expense?: EditableExpense | null;
+}) {
+  const isEdit = expense !== null;
   const { data: categories = [] } = useCategories();
   const createExpense = useCreateExpense();
+  const updateExpense = useUpdateExpense();
+  const deleteExpense = useDeleteExpense();
 
-  const [amount, setAmount] = useState("");
+  const [amount, setAmount] = useState(expense ? String(expense.amount) : "");
   const [category, setCategory] = useState<Category | null>(null);
   const [subcategory, setSubcategory] = useState<Subcategory | null>(null);
-  const [date, setDate] = useState(todayISO());
-  const [note, setNote] = useState("");
+  const [date, setDate] = useState(expense?.date.slice(0, 10) ?? todayISO());
+  const [note, setNote] = useState(expense?.label ?? "");
+  const [prefilled, setPrefilled] = useState(!isEdit);
 
+  useEffect(() => {
+    if (prefilled || !expense || categories.length === 0) return;
+    const cat = categories.find((c) => c.id === expense.categoryId) ?? null;
+    setCategory(cat);
+    setSubcategory(cat?.subcategories.find((s) => s.id === expense.subcategoryId) ?? null);
+    setPrefilled(true);
+  }, [prefilled, expense, categories]);
+
+  const pending = createExpense.isPending || updateExpense.isPending || deleteExpense.isPending;
   const canSave = Number(amount) > 0 && category !== null;
 
   async function handleSave() {
     if (!canSave || !category) return;
-    await createExpense.mutateAsync({
+    const input = {
       amount: Number(amount),
       categoryId: category.id,
       subcategoryId: subcategory?.id,
       date,
       label: note || undefined,
-    });
+    };
+    if (isEdit) {
+      await updateExpense.mutateAsync({ id: expense.id, ...input });
+    } else {
+      await createExpense.mutateAsync(input);
+    }
+    onClose();
+  }
+
+  async function handleDelete() {
+    if (!expense) return;
+    await deleteExpense.mutateAsync(expense.id);
     onClose();
   }
 
@@ -45,16 +84,30 @@ export function ExpenseQuickAdd({ onClose }: { onClose: () => void }) {
         onClick={(e) => e.stopPropagation()}
       >
         <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-lg font-semibold">Nouvelle dépense</h2>
-          <button onClick={onClose} aria-label="Fermer">
-            <X size={22} />
-          </button>
+          <h2 className="text-lg font-semibold">
+            {isEdit ? "Modifier la dépense" : "Nouvelle dépense"}
+          </h2>
+          <div className="flex items-center gap-3">
+            {isEdit && (
+              <button
+                onClick={handleDelete}
+                disabled={pending}
+                aria-label="Supprimer"
+                className="text-red-400 disabled:opacity-40"
+              >
+                <Trash2 size={20} />
+              </button>
+            )}
+            <button onClick={onClose} aria-label="Fermer">
+              <X size={22} />
+            </button>
+          </div>
         </div>
 
         <input
           type="number"
           inputMode="decimal"
-          autoFocus
+          autoFocus={!isEdit}
           placeholder="0,00 €"
           value={amount}
           onChange={(e) => setAmount(e.target.value)}
@@ -103,10 +156,10 @@ export function ExpenseQuickAdd({ onClose }: { onClose: () => void }) {
 
         <button
           onClick={handleSave}
-          disabled={!canSave || createExpense.isPending}
+          disabled={!canSave || pending}
           className="mt-5 w-full rounded-xl bg-blue-500 py-3 font-semibold text-white disabled:opacity-40"
         >
-          {createExpense.isPending ? "Enregistrement..." : "Enregistrer"}
+          {pending ? "Enregistrement..." : "Enregistrer"}
         </button>
       </div>
     </div>

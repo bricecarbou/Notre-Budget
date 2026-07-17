@@ -9,6 +9,11 @@ export interface CreateExpenseInput {
   label?: string;
 }
 
+function invalidate(queryClient: ReturnType<typeof useQueryClient>) {
+  queryClient.invalidateQueries({ queryKey: ["dashboard"] });
+  queryClient.invalidateQueries({ queryKey: ["analytics"] });
+}
+
 export function useCreateExpense() {
   const queryClient = useQueryClient();
 
@@ -17,8 +22,29 @@ export function useCreateExpense() {
       const { data } = await apiClient.post("/expenses", input);
       return data;
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["dashboard"] });
+    onSuccess: () => invalidate(queryClient),
+  });
+}
+
+export function useUpdateExpense() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({ id, ...input }: Partial<CreateExpenseInput> & { id: string }) => {
+      const { data } = await apiClient.patch(`/expenses/${id}`, input);
+      return data;
     },
+    onSuccess: () => invalidate(queryClient),
+  });
+}
+
+export function useDeleteExpense() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (id: string) => {
+      await apiClient.delete(`/expenses/${id}`);
+    },
+    onSuccess: () => invalidate(queryClient),
   });
 }

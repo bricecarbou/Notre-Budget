@@ -25,6 +25,15 @@ export function createIncome(data: {
   return prisma.income.create({ data });
 }
 
+export async function updateIncome(
+  id: string,
+  data: Partial<{ label: string; amount: number; date: Date }>
+) {
+  const income = await prisma.income.findUnique({ where: { id } });
+  if (!income) throw new IncomeError("Revenu introuvable", 404);
+  return prisma.income.update({ where: { id }, data });
+}
+
 export async function deleteIncome(id: string) {
   const income = await prisma.income.findUnique({ where: { id } });
   if (!income) throw new IncomeError("Revenu introuvable", 404);

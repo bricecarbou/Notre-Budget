@@ -1,6 +1,7 @@
 import type { Request, Response } from "express";
 import {
   createIncomeSchema,
+  updateIncomeSchema,
   listIncomesQuerySchema,
 } from "../validators/incomes.validators";
 import * as incomesService from "../services/incomes.service";
@@ -27,6 +28,17 @@ export async function createHandler(req: Request, res: Response) {
     createdById: req.user!.id,
   });
   res.status(201).json(income);
+}
+
+export async function updateHandler(req: Request, res: Response) {
+  const parsed = updateIncomeSchema.safeParse(req.body);
+  if (!parsed.success) return res.status(400).json({ error: parsed.error.flatten() });
+  try {
+    const income = await incomesService.updateIncome(req.params.id, parsed.data);
+    res.json(income);
+  } catch (err) {
+    handleError(err, res);
+  }
 }
 
 export async function deleteHandler(req: Request, res: Response) {

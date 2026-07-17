@@ -6,6 +6,8 @@ export const createIncomeSchema = z.object({
   date: z.coerce.date(),
 });
 
+export const updateIncomeSchema = createIncomeSchema.partial();
+
 export const listIncomesQuerySchema = z.object({
   year: z.coerce.number().int(),
   month: z.coerce.number().int().min(1).max(12),

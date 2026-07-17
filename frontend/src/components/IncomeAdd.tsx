@@ -1,33 +1,55 @@
 import { useState } from "react";
-import { X } from "lucide-react";
-import { useCreateIncome } from "@/hooks/useIncomes";
+import { Trash2, X } from "lucide-react";
+import { useCreateIncome, useUpdateIncome, useDeleteIncome } from "@/hooks/useIncomes";
 import { useCreateIncomeTemplate } from "@/hooks/useIncomeTemplates";
+
+export interface EditableIncome {
+  id: string;
+  label: string;
+  amount: number;
+  date: string;
+}
 
 function todayISO() {
   return new Date().toISOString().slice(0, 10);
 }
 
-export function IncomeAdd({ onClose }: { onClose: () => void }) {
+export function IncomeAdd({
+  onClose,
+  income = null,
+}: {
+  onClose: () => void;
+  income?: EditableIncome | null;
+}) {
+  const isEdit = income !== null;
   const [recurring, setRecurring] = useState(false);
-  const [label, setLabel] = useState("");
-  const [amount, setAmount] = useState("");
-  const [date, setDate] = useState(todayISO());
+  const [label, setLabel] = useState(income?.label ?? "");
+  const [amount, setAmount] = useState(income ? String(income.amount) : "");
+  const [date, setDate] = useState(income?.date.slice(0, 10) ?? todayISO());
   const [dayOfMonth, setDayOfMonth] = useState("1");
   const [startDate, setStartDate] = useState(todayISO());
   const [endDate, setEndDate] = useState("");
 
   const createIncome = useCreateIncome();
+  const updateIncome = useUpdateIncome();
+  const deleteIncome = useDeleteIncome();
   const createIncomeTemplate = useCreateIncomeTemplate();
 
-  const pending = createIncome.isPending || createIncomeTemplate.isPending;
-  const error = createIncome.error || createIncomeTemplate.error;
+  const pending =
+    createIncome.isPending ||
+    updateIncome.isPending ||
+    deleteIncome.isPending ||
+    createIncomeTemplate.isPending;
+  const error = createIncome.error || updateIncome.error || createIncomeTemplate.error;
   const canSave = label.trim().length > 0 && Number(amount) > 0;
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!canSave) return;
     try {
-      if (recurring) {
+      if (isEdit) {
+        await updateIncome.mutateAsync({ id: income.id, label, amount: Number(amount), date });
+      } else if (recurring) {
         await createIncomeTemplate.mutateAsync({
           label,
           amount: Number(amount),
@@ -44,6 +66,12 @@ export function IncomeAdd({ onClose }: { onClose: () => void }) {
     }
   }
 
+  async function handleDelete() {
+    if (!income) return;
+    await deleteIncome.mutateAsync(income.id);
+    onClose();
+  }
+
   return (
     <div className="fixed inset-0 z-50 flex items-end bg-black/60" onClick={onClose}>
       <div
@@ -51,32 +79,48 @@ export function IncomeAdd({ onClose }: { onClose: () => void }) {
         onClick={(e) => e.stopPropagation()}
       >
         <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-lg font-semibold">Nouveau revenu</h2>
-          <button onClick={onClose} aria-label="Fermer">
-            <X size={22} />
-          </button>
+          <h2 className="text-lg font-semibold">
+            {isEdit ? "Modifier le revenu" : "Nouveau revenu"}
+          </h2>
+          <div className="flex items-center gap-3">
+            {isEdit && (
+              <button
+                onClick={handleDelete}
+                disabled={pending}
+                aria-label="Supprimer"
+                className="text-red-400 disabled:opacity-40"
+              >
+                <Trash2 size={20} />
+              </button>
+            )}
+            <button onClick={onClose} aria-label="Fermer">
+              <X size={22} />
+            </button>
+          </div>
         </div>
 
-        <div className="mb-4 flex gap-2 rounded-xl bg-slate-900 p-1">
-          <button
-            type="button"
-            onClick={() => setRecurring(false)}
-            className={`flex-1 rounded-lg py-2 text-sm font-medium ${
-              !recurring ? "bg-blue-500 text-white" : "text-slate-400"
-            }`}
-          >
-            Ponctuel
-          </button>
-          <button
-            type="button"
-            onClick={() => setRecurring(true)}
-            className={`flex-1 rounded-lg py-2 text-sm font-medium ${
-              recurring ? "bg-blue-500 text-white" : "text-slate-400"
-            }`}
-          >
-            Récurrent mensuel
-          </button>
-        </div>
+        {!isEdit && (
+          <div className="mb-4 flex gap-2 rounded-xl bg-slate-900 p-1">
+            <button
+              type="button"
+              onClick={() => setRecurring(false)}
+              className={`flex-1 rounded-lg py-2 text-sm font-medium ${
+                !recurring ? "bg-blue-500 text-white" : "text-slate-400"
+              }`}
+            >
+              Ponctuel
+            </button>
+            <button
+              type="button"
+              onClick={() => setRecurring(true)}
+              className={`flex-1 rounded-lg py-2 text-sm font-medium ${
+                recurring ? "bg-blue-500 text-white" : "text-slate-400"
+              }`}
+            >
+              Récurrent mensuel
+            </button>
+          </div>
+        )}
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-3">
           <input
@@ -97,7 +141,7 @@ export function IncomeAdd({ onClose }: { onClose: () => void }) {
             required
           />
 
-          {recurring ? (
+          {!isEdit && recurring ? (
             <>
               <label className="text-xs text-slate-500">Jour du mois</label>
               <input
