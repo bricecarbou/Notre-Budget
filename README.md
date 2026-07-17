@@ -28,7 +28,7 @@ Application de suivi de budget familial partagé (PWA).
 
 ```bash
 cd backend
-cp .env.example .env   # renseigner DATABASE_URL, JWT_SECRET, JWT_REFRESH_SECRET, SEED_ADMIN_EMAIL, SEED_ADMIN_PASSWORD
+cp .env.example .env   # renseigner DATABASE_URL, JWT_SECRET, JWT_REFRESH_SECRET, SEED_ADMIN_LOGIN, SEED_ADMIN_PASSWORD
 npm install
 npx prisma migrate dev
 npm run seed
@@ -47,7 +47,7 @@ Le frontend en dev (Vite) proxy les appels `/api` vers le backend (voir `fronten
 
 ## Déploiement Render
 
-Voir `render.yaml`. Les variables `SEED_ADMIN_EMAIL` et `SEED_ADMIN_PASSWORD` doivent être saisies manuellement dans l'interface Render (non stockées dans le repo).
+Voir `render.yaml`. Les variables `SEED_ADMIN_LOGIN` et `SEED_ADMIN_PASSWORD` doivent être saisies manuellement dans l'interface Render (non stockées dans le repo).
 
 En production, le backend sert le build statique de `frontend/dist` et applique les migrations Prisma (`prisma migrate deploy`) au démarrage.
 

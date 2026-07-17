@@ -19,33 +19,33 @@ const DEFAULT_CATEGORIES: { name: string; subcategories?: string[] }[] = [
 ];
 
 async function seedAdmin() {
-  const email = process.env.SEED_ADMIN_EMAIL;
+  const login = process.env.SEED_ADMIN_LOGIN;
   const password = process.env.SEED_ADMIN_PASSWORD;
 
-  if (!email || !password) {
+  if (!login || !password) {
     console.warn(
-      "SEED_ADMIN_EMAIL / SEED_ADMIN_PASSWORD non définis — admin non créé."
+      "SEED_ADMIN_LOGIN / SEED_ADMIN_PASSWORD non définis — admin non créé."
     );
     return;
   }
 
-  const existing = await prisma.user.findUnique({ where: { email } });
+  const existing = await prisma.user.findUnique({ where: { login } });
   if (existing) {
-    console.log(`Admin ${email} déjà présent, rien à faire.`);
+    console.log(`Admin ${login} déjà présent, rien à faire.`);
     return;
   }
 
   const passwordHash = await bcrypt.hash(password, 10);
   await prisma.user.create({
     data: {
-      email,
+      login,
       passwordHash,
       name: "Admin",
       role: Role.ADMIN,
       active: true,
     },
   });
-  console.log(`Admin ${email} créé.`);
+  console.log(`Admin ${login} créé.`);
 }
 
 async function seedCategories() {

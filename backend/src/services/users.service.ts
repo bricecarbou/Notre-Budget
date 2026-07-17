@@ -10,7 +10,7 @@ export class UserError extends Error {
 
 const publicSelect = {
   id: true,
-  email: true,
+  login: true,
   name: true,
   role: true,
   active: true,
@@ -22,18 +22,18 @@ export function listUsers() {
 }
 
 export async function createUser(data: {
-  email: string;
+  login: string;
   name: string;
   password: string;
   role: Role;
 }) {
-  const existing = await prisma.user.findUnique({ where: { email: data.email } });
-  if (existing) throw new UserError("Un utilisateur avec cet email existe déjà", 409);
+  const existing = await prisma.user.findUnique({ where: { login: data.login } });
+  if (existing) throw new UserError("Un utilisateur avec ce login existe déjà", 409);
 
   const passwordHash = await hashPassword(data.password);
   return prisma.user.create({
     data: {
-      email: data.email,
+      login: data.login,
       name: data.name,
       role: data.role,
       passwordHash,

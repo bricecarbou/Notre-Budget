@@ -10,7 +10,7 @@ export function requireAuth(req: Request, res: Response, next: NextFunction) {
   const token = header.slice("Bearer ".length);
   try {
     const payload = verifyAccessToken(token);
-    req.user = { id: payload.sub, email: payload.email, role: payload.role };
+    req.user = { id: payload.sub, login: payload.login, role: payload.role };
     next();
   } catch {
     return res.status(401).json({ error: "Token invalide ou expiré" });

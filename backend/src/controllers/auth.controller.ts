@@ -10,7 +10,7 @@ export async function loginHandler(req: Request, res: Response) {
 
   try {
     const result = await authService.login(
-      parsed.data.email,
+      parsed.data.login,
       parsed.data.password
     );
     return res.json(result);

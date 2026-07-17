@@ -16,7 +16,7 @@ services:
         generateValue: true
       - key: NODE_ENV
         value: production
-      - key: SEED_ADMIN_EMAIL
+      - key: SEED_ADMIN_LOGIN
         sync: false
       - key: SEED_ADMIN_PASSWORD
         sync: false

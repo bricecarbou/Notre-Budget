@@ -6,7 +6,7 @@ export function useLogin() {
   const setSession = useAuthStore((s) => s.setSession);
 
   return useMutation({
-    mutationFn: async (credentials: { email: string; password: string }) => {
+    mutationFn: async (credentials: { login: string; password: string }) => {
       const { data } = await apiClient.post("/auth/login", credentials);
       return data;
     },

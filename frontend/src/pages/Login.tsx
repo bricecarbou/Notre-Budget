@@ -6,9 +6,9 @@ import { useAuthStore } from "@/store/authStore";
 export function Login() {
   const user = useAuthStore((s) => s.user);
   const navigate = useNavigate();
-  const login = useLogin();
+  const loginMutation = useLogin();
 
-  const [email, setEmail] = useState("");
+  const [login, setLogin] = useState("");
   const [password, setPassword] = useState("");
 
   if (user) return <Navigate to="/" replace />;
@@ -16,10 +16,10 @@ export function Login() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     try {
-      await login.mutateAsync({ email, password });
+      await loginMutation.mutateAsync({ login, password });
       navigate("/");
     } catch {
-      // erreur affichée via login.isError
+      // erreur affichée via loginMutation.isError
     }
   }
 
@@ -28,10 +28,10 @@ export function Login() {
       <h1 className="mb-8 text-center text-2xl font-bold">Notre Budget</h1>
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          type="text"
+          placeholder="Login"
+          value={login}
+          onChange={(e) => setLogin(e.target.value)}
           className="rounded-xl bg-slate-900 p-3 outline-none"
           required
         />
@@ -43,15 +43,15 @@ export function Login() {
           className="rounded-xl bg-slate-900 p-3 outline-none"
           required
         />
-        {login.isError && (
-          <p className="text-sm text-red-500">Email ou mot de passe incorrect.</p>
+        {loginMutation.isError && (
+          <p className="text-sm text-red-500">Login ou mot de passe incorrect.</p>
         )}
         <button
           type="submit"
-          disabled={login.isPending}
+          disabled={loginMutation.isPending}
           className="rounded-xl bg-blue-500 py-3 font-semibold text-white disabled:opacity-40"
         >
-          {login.isPending ? "Connexion..." : "Se connecter"}
+          {loginMutation.isPending ? "Connexion..." : "Se connecter"}
         </button>
       </form>
     </div>

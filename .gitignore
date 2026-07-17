@@ -12,3 +12,4 @@ backend/prisma/*.db
 coverage/
 .vscode/
 .idea/
+*.tsbuildinfo

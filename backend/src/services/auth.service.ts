@@ -8,8 +8,8 @@ import {
 
 export class AuthError extends Error {}
 
-export async function login(email: string, password: string) {
-  const user = await prisma.user.findUnique({ where: { email } });
+export async function login(login: string, password: string) {
+  const user = await prisma.user.findUnique({ where: { login } });
   if (!user || !user.active) {
     throw new AuthError("Identifiants invalides");
   }
@@ -21,7 +21,7 @@ export async function login(email: string, password: string) {
 
   const accessToken = signAccessToken({
     sub: user.id,
-    email: user.email,
+    login: user.login,
     role: user.role,
   });
   const refreshToken = signRefreshToken({ sub: user.id });
@@ -31,7 +31,7 @@ export async function login(email: string, password: string) {
     refreshToken,
     user: {
       id: user.id,
-      email: user.email,
+      login: user.login,
       name: user.name,
       role: user.role,
     },
@@ -53,7 +53,7 @@ export async function refresh(refreshToken: string) {
 
   const accessToken = signAccessToken({
     sub: user.id,
-    email: user.email,
+    login: user.login,
     role: user.role,
   });
 
