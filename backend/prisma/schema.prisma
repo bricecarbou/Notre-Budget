@@ -1,0 +1,110 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  name         String
+  role         Role     @default(USER)
+  active       Boolean  @default(true)
+  createdAt    DateTime @default(now())
+
+  incomes          Income[]
+  incomeTemplates  IncomeTemplate[]
+  expenses         Expense[]
+  expenseTemplates ExpenseTemplate[]
+}
+
+enum Role {
+  ADMIN
+  USER
+}
+
+model Category {
+  id        String  @id @default(cuid())
+  name      String  @unique
+  icon      String?
+  color     String?
+  isDefault Boolean @default(false)
+
+  subcategories    Subcategory[]
+  expenses         Expense[]
+  expenseTemplates ExpenseTemplate[]
+}
+
+model Subcategory {
+  id         String   @id @default(cuid())
+  name       String
+  categoryId String
+  category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  expenses         Expense[]
+  expenseTemplates ExpenseTemplate[]
+
+  @@unique([categoryId, name])
+}
+
+// Revenu ponctuel (one-off)
+model Income {
+  id          String   @id @default(cuid())
+  label       String
+  amount      Decimal
+  date        DateTime
+  createdById String
+  createdBy   User     @relation(fields: [createdById], references: [id])
+  createdAt   DateTime @default(now())
+}
+
+// Revenu récurrent mensuel (template)
+model IncomeTemplate {
+  id          String    @id @default(cuid())
+  label       String
+  amount      Decimal
+  dayOfMonth  Int
+  startDate   DateTime
+  endDate     DateTime?
+  active      Boolean   @default(true)
+  createdById String
+  createdBy   User      @relation(fields: [createdById], references: [id])
+  createdAt   DateTime  @default(now())
+}
+
+// Dépense ponctuelle
+model Expense {
+  id            String       @id @default(cuid())
+  label         String?
+  amount        Decimal
+  date          DateTime
+  categoryId    String
+  category      Category     @relation(fields: [categoryId], references: [id])
+  subcategoryId String?
+  subcategory   Subcategory? @relation(fields: [subcategoryId], references: [id])
+  createdById   String
+  createdBy     User         @relation(fields: [createdById], references: [id])
+  createdAt     DateTime     @default(now())
+}
+
+// Dépense récurrente mensuelle (assurance, crédit, abonnement, impôt...)
+model ExpenseTemplate {
+  id            String       @id @default(cuid())
+  label         String
+  amount        Decimal
+  dayOfMonth    Int
+  startDate     DateTime
+  endDate       DateTime?
+  active        Boolean      @default(true)
+  categoryId    String
+  category      Category     @relation(fields: [categoryId], references: [id])
+  subcategoryId String?
+  subcategory   Subcategory? @relation(fields: [subcategoryId], references: [id])
+  createdById   String
+  createdBy     User         @relation(fields: [createdById], references: [id])
+  createdAt     DateTime     @default(now())
+}
