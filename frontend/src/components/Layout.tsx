@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Outlet } from "react-router-dom";
+import { TopBar } from "./TopBar";
 import { BottomNav } from "./BottomNav";
 import { ExpenseQuickAdd } from "./ExpenseQuickAdd";
 
@@ -8,6 +9,7 @@ export function Layout() {
 
   return (
     <div className="mx-auto min-h-screen max-w-md pb-24">
+      <TopBar />
       <main className="p-4">
         <Outlet />
       </main>
