@@ -16,7 +16,7 @@ export function TopBar() {
   }
 
   return (
-    <header className="flex items-center justify-between border-b border-slate-800 px-4 py-3">
+    <header className="flex items-center justify-between border-b border-slate-800 px-4 pb-3 pt-[calc(0.75rem+env(safe-area-inset-top))]">
       <div>
         <div className="text-sm font-semibold">Notre Budget</div>
         {user && <div className="text-xs text-slate-500">{user.name}</div>}

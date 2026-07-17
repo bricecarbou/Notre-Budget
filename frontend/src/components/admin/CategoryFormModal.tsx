@@ -63,7 +63,7 @@ export function CategoryFormModal({
             value={name}
             onChange={(e) => setName(e.target.value)}
             disabled={locked}
-            className="rounded-xl bg-slate-900 p-3 text-sm outline-none disabled:opacity-50"
+            className="rounded-xl bg-slate-900 p-3 text-base outline-none disabled:opacity-50"
             required
           />
           <input
@@ -71,7 +71,7 @@ export function CategoryFormModal({
             placeholder="Icône (nom lucide-react, ex: ShoppingCart)"
             value={icon}
             onChange={(e) => setIcon(e.target.value)}
-            className="rounded-xl bg-slate-900 p-3 text-sm outline-none"
+            className="rounded-xl bg-slate-900 p-3 text-base outline-none"
           />
           <div className="flex items-center gap-3">
             <label className="text-sm text-slate-400">Couleur</label>

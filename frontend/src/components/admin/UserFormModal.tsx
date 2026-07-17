@@ -63,7 +63,7 @@ export function UserFormModal({
             value={login}
             onChange={(e) => setLogin(e.target.value)}
             disabled={isEdit}
-            className="rounded-xl bg-slate-900 p-3 text-sm outline-none disabled:opacity-50"
+            className="rounded-xl bg-slate-900 p-3 text-base outline-none disabled:opacity-50"
             required
           />
           <input
@@ -71,13 +71,13 @@ export function UserFormModal({
             placeholder="Nom"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className="rounded-xl bg-slate-900 p-3 text-sm outline-none"
+            className="rounded-xl bg-slate-900 p-3 text-base outline-none"
             required
           />
           <select
             value={role}
             onChange={(e) => setRole(e.target.value as Role)}
-            className="rounded-xl bg-slate-900 p-3 text-sm outline-none"
+            className="rounded-xl bg-slate-900 p-3 text-base outline-none"
           >
             <option value="USER">Utilisateur</option>
             <option value="ADMIN">Administrateur</option>
@@ -87,7 +87,7 @@ export function UserFormModal({
             placeholder={isEdit ? "Nouveau mot de passe (optionnel)" : "Mot de passe"}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="rounded-xl bg-slate-900 p-3 text-sm outline-none"
+            className="rounded-xl bg-slate-900 p-3 text-base outline-none"
             required={!isEdit}
             minLength={8}
           />

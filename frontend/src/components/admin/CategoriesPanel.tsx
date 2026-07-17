@@ -41,7 +41,7 @@ function SubcategoryAddRow({ categoryId }: { categoryId: string }) {
         placeholder="Nom de la sous-catégorie"
         value={name}
         onChange={(e) => setName(e.target.value)}
-        className="flex-1 rounded-lg bg-slate-900 p-2 text-xs outline-none"
+        className="flex-1 rounded-lg bg-slate-900 p-2 text-base outline-none"
       />
       <button type="submit" className="text-xs font-semibold text-blue-400">
         Ajouter

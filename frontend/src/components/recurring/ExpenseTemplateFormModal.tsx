@@ -80,7 +80,7 @@ export function ExpenseTemplateFormModal({
             placeholder="Libellé (ex: Assurance Maison)"
             value={label}
             onChange={(e) => setLabel(e.target.value)}
-            className="rounded-xl bg-slate-900 p-3 text-sm outline-none"
+            className="rounded-xl bg-slate-900 p-3 text-base outline-none"
             required
           />
           <input
@@ -89,7 +89,7 @@ export function ExpenseTemplateFormModal({
             placeholder="Montant"
             value={amount}
             onChange={(e) => setAmount(e.target.value)}
-            className="rounded-xl bg-slate-900 p-3 text-sm outline-none"
+            className="rounded-xl bg-slate-900 p-3 text-base outline-none"
             required
           />
 
@@ -99,7 +99,7 @@ export function ExpenseTemplateFormModal({
               setCategoryId(e.target.value);
               setSubcategoryId("");
             }}
-            className="rounded-xl bg-slate-900 p-3 text-sm outline-none"
+            className="rounded-xl bg-slate-900 p-3 text-base outline-none"
             required
           >
             <option value="" disabled>
@@ -116,7 +116,7 @@ export function ExpenseTemplateFormModal({
             <select
               value={subcategoryId}
               onChange={(e) => setSubcategoryId(e.target.value)}
-              className="rounded-xl bg-slate-900 p-3 text-sm outline-none"
+              className="rounded-xl bg-slate-900 p-3 text-base outline-none"
             >
               <option value="">Sans sous-catégorie</option>
               {selectedCategory.subcategories.map((s) => (
@@ -134,7 +134,7 @@ export function ExpenseTemplateFormModal({
             max={31}
             value={dayOfMonth}
             onChange={(e) => setDayOfMonth(e.target.value)}
-            className="rounded-xl bg-slate-900 p-3 text-sm outline-none"
+            className="rounded-xl bg-slate-900 p-3 text-base outline-none"
             required
           />
           <label className="text-xs text-slate-500">Date de début</label>
@@ -142,7 +142,7 @@ export function ExpenseTemplateFormModal({
             type="date"
             value={startDate}
             onChange={(e) => setStartDate(e.target.value)}
-            className="rounded-xl bg-slate-900 p-3 text-sm outline-none"
+            className="rounded-xl bg-slate-900 p-3 text-base outline-none"
             required
           />
           <label className="text-xs text-slate-500">Date de fin (optionnel)</label>
@@ -150,7 +150,7 @@ export function ExpenseTemplateFormModal({
             type="date"
             value={endDate}
             onChange={(e) => setEndDate(e.target.value)}
-            className="rounded-xl bg-slate-900 p-3 text-sm outline-none"
+            className="rounded-xl bg-slate-900 p-3 text-base outline-none"
           />
 
           {error && <p className="text-sm text-red-500">Impossible d'enregistrer.</p>}

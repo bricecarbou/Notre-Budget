@@ -11,7 +11,7 @@ export function BottomNav({ onAddClick }: { onAddClick: () => void }) {
   const isAdmin = useAuthStore((s) => s.user?.role === "ADMIN");
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-40 flex items-center justify-around border-t border-slate-800 bg-slate-950/95 px-2 py-2 backdrop-blur">
+    <nav className="fixed bottom-0 left-0 right-0 z-40 flex items-center justify-around border-t border-slate-800 bg-slate-950/95 px-2 pb-[calc(0.5rem+env(safe-area-inset-bottom))] pt-2 backdrop-blur">
       <NavLink to="/" end className={linkClass}>
         <LayoutDashboard size={20} />
         Dashboard

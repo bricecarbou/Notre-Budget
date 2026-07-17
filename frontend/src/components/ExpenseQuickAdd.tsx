@@ -41,7 +41,7 @@ export function ExpenseQuickAdd({ onClose }: { onClose: () => void }) {
   return (
     <div className="fixed inset-0 z-50 flex items-end bg-black/60" onClick={onClose}>
       <div
-        className="max-h-[90vh] w-full overflow-y-auto rounded-t-3xl bg-slate-950 p-5"
+        className="max-h-[90vh] w-full overflow-y-auto rounded-t-3xl bg-slate-950 p-5 pb-[calc(1.25rem+env(safe-area-inset-bottom))]"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="mb-4 flex items-center justify-between">
@@ -90,14 +90,14 @@ export function ExpenseQuickAdd({ onClose }: { onClose: () => void }) {
             type="date"
             value={date}
             onChange={(e) => setDate(e.target.value)}
-            className="rounded-xl bg-slate-900 p-3 text-sm outline-none"
+            className="rounded-xl bg-slate-900 p-3 text-base outline-none"
           />
           <input
             type="text"
             placeholder="Note (optionnel)"
             value={note}
             onChange={(e) => setNote(e.target.value)}
-            className="rounded-xl bg-slate-900 p-3 text-sm outline-none"
+            className="rounded-xl bg-slate-900 p-3 text-base outline-none"
           />
         </div>
 
