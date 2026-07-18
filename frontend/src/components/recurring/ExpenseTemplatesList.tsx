@@ -1,12 +1,14 @@
-import { useState } from "react";
-import { Pencil, Plus, Trash2 } from "lucide-react";
+import { useMemo, useState } from "react";
+import { Pencil, Plus, Search, Trash2 } from "lucide-react";
 import {
   useExpenseTemplates,
   useUpdateExpenseTemplate,
   useDeleteExpenseTemplate,
 } from "@/hooks/useExpenseTemplates";
+import { usePaginatedFilter } from "@/hooks/usePaginatedFilter";
 import { useAuthStore } from "@/store/authStore";
 import { CategoryIcon } from "@/lib/categoryIcon";
+import { PaginationControls } from "@/components/PaginationControls";
 import { ExpenseTemplateFormModal } from "./ExpenseTemplateFormModal";
 import type { ExpenseTemplate } from "@/types";
 
@@ -14,12 +16,48 @@ function formatEuros(amount: number) {
   return amount.toLocaleString("fr-FR", { style: "currency", currency: "EUR" });
 }
 
+type ActiveFilter = "all" | "active" | "inactive";
+
 export function ExpenseTemplatesList() {
   const { data: templates = [], isLoading } = useExpenseTemplates();
   const updateTemplate = useUpdateExpenseTemplate();
   const deleteTemplate = useDeleteExpenseTemplate();
   const isAdmin = useAuthStore((s) => s.user?.role === "ADMIN");
   const [editing, setEditing] = useState<ExpenseTemplate | null | "new">(null);
+  const [categoryFilter, setCategoryFilter] = useState("");
+  const [activeFilter, setActiveFilter] = useState<ActiveFilter>("all");
+
+  const categoryOptions = useMemo(() => {
+    const seen = new Map<string, string>();
+    for (const t of templates) {
+      if (t.category) seen.set(t.category.id, t.category.name);
+    }
+    return [...seen.entries()].sort((a, b) => a[1].localeCompare(b[1]));
+  }, [templates]);
+
+  const filteredByDropdowns = useMemo(() => {
+    return templates.filter((t) => {
+      if (categoryFilter && t.categoryId !== categoryFilter) return false;
+      if (activeFilter === "active" && !t.active) return false;
+      if (activeFilter === "inactive" && t.active) return false;
+      return true;
+    });
+  }, [templates, categoryFilter, activeFilter]);
+
+  const {
+    search,
+    setSearch,
+    pageSize,
+    setPageSize,
+    page,
+    setPage,
+    totalPages,
+    totalResults,
+    paginated,
+  } = usePaginatedFilter({
+    items: filteredByDropdowns,
+    searchFields: (t) => [t.label, t.category?.name ?? ""],
+  });
 
   return (
     <div>
@@ -35,13 +73,62 @@ export function ExpenseTemplatesList() {
         )}
       </div>
 
+      <div className="mb-3 flex flex-col gap-2">
+        <div className="relative">
+          <Search
+            size={16}
+            className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
+          />
+          <input
+            type="text"
+            placeholder="Rechercher (libellé, catégorie)"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="w-full rounded-xl bg-slate-100 py-2 pl-9 pr-3 text-base outline-none dark:bg-slate-900"
+          />
+        </div>
+
+        <div className="flex gap-2">
+          <select
+            value={categoryFilter}
+            onChange={(e) => {
+              setCategoryFilter(e.target.value);
+              setPage(1);
+            }}
+            className="flex-1 rounded-xl bg-slate-100 p-2 text-sm outline-none dark:bg-slate-900"
+          >
+            <option value="">Toutes les catégories</option>
+            {categoryOptions.map(([id, name]) => (
+              <option key={id} value={id}>
+                {name}
+              </option>
+            ))}
+          </select>
+          <select
+            value={activeFilter}
+            onChange={(e) => {
+              setActiveFilter(e.target.value as ActiveFilter);
+              setPage(1);
+            }}
+            className="flex-1 rounded-xl bg-slate-100 p-2 text-sm outline-none dark:bg-slate-900"
+          >
+            <option value="all">Actifs et inactifs</option>
+            <option value="active">Actifs seulement</option>
+            <option value="inactive">Inactifs seulement</option>
+          </select>
+        </div>
+      </div>
+
       {isLoading && <p className="py-4 text-sm text-slate-500">Chargement...</p>}
       {!isLoading && templates.length === 0 && (
         <p className="py-4 text-sm text-slate-500">Aucune dépense récurrente.</p>
       )}
+      {!isLoading && templates.length > 0 && totalResults === 0 && (
+        <p className="py-4 text-sm text-slate-500">Aucun résultat pour ces critères.</p>
+      )}
 
       <ul className="divide-y divide-slate-200 dark:divide-slate-800">
-        {templates.map((t) => (
+        {paginated.map((t) => (
           <li key={t.id} className="flex items-center gap-3 py-3">
             <CategoryIcon icon={t.category?.icon} color={t.category?.color} />
             <div className="flex-1">
@@ -101,6 +188,15 @@ export function ExpenseTemplatesList() {
           </li>
         ))}
       </ul>
+
+      <PaginationControls
+        page={page}
+        totalPages={totalPages}
+        totalResults={totalResults}
+        pageSize={pageSize}
+        onPageChange={setPage}
+        onPageSizeChange={setPageSize}
+      />
 
       {editing !== null && (
         <ExpenseTemplateFormModal
