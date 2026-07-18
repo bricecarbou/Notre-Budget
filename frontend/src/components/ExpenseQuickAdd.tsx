@@ -105,6 +105,14 @@ export function ExpenseQuickAdd({
         </div>
 
         <input
+          type="text"
+          placeholder="Libellé (ex: Pain, Restaurant, Péage...)"
+          value={label}
+          onChange={(e) => setLabel(e.target.value)}
+          className="mb-3 w-full rounded-xl bg-slate-100 p-3 text-base outline-none dark:bg-slate-900"
+        />
+
+        <input
           type="number"
           inputMode="decimal"
           autoFocus={!isEdit}
@@ -143,13 +151,6 @@ export function ExpenseQuickAdd({
             type="date"
             value={date}
             onChange={(e) => setDate(e.target.value)}
-            className="rounded-xl bg-slate-100 p-3 text-base outline-none dark:bg-slate-900"
-          />
-          <input
-            type="text"
-            placeholder="Libellé (ex: Pain, Restaurant, Péage...)"
-            value={label}
-            onChange={(e) => setLabel(e.target.value)}
             className="rounded-xl bg-slate-100 p-3 text-base outline-none dark:bg-slate-900"
           />
         </div>
