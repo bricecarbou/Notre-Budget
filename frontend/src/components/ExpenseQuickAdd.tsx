@@ -35,7 +35,7 @@ export function ExpenseQuickAdd({
   const [category, setCategory] = useState<Category | null>(null);
   const [subcategory, setSubcategory] = useState<Subcategory | null>(null);
   const [date, setDate] = useState(expense?.date.slice(0, 10) ?? todayISO());
-  const [note, setNote] = useState(expense?.label ?? "");
+  const [label, setLabel] = useState(expense?.label ?? "");
   const [prefilled, setPrefilled] = useState(!isEdit);
 
   useEffect(() => {
@@ -56,7 +56,7 @@ export function ExpenseQuickAdd({
       categoryId: category.id,
       subcategoryId: subcategory?.id,
       date,
-      label: note || undefined,
+      label: label || undefined,
     };
     if (isEdit) {
       await updateExpense.mutateAsync({ id: expense.id, ...input });
@@ -147,9 +147,9 @@ export function ExpenseQuickAdd({
           />
           <input
             type="text"
-            placeholder="Note (optionnel)"
-            value={note}
-            onChange={(e) => setNote(e.target.value)}
+            placeholder="Libellé (ex: Pain, Restaurant, Péage...)"
+            value={label}
+            onChange={(e) => setLabel(e.target.value)}
             className="rounded-xl bg-slate-100 p-3 text-base outline-none dark:bg-slate-900"
           />
         </div>
