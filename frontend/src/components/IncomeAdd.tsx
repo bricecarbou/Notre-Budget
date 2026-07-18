@@ -75,7 +75,7 @@ export function IncomeAdd({
   return (
     <div className="fixed inset-0 z-50 flex items-end bg-black/60" onClick={onClose}>
       <div
-        className="max-h-[90vh] w-full overflow-y-auto rounded-t-3xl bg-slate-950 p-5 pb-[calc(1.25rem+env(safe-area-inset-bottom))]"
+        className="max-h-[90vh] w-full overflow-y-auto rounded-t-3xl bg-white p-5 pb-[calc(1.25rem+env(safe-area-inset-bottom))] dark:bg-slate-950"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="mb-4 flex items-center justify-between">
@@ -100,12 +100,12 @@ export function IncomeAdd({
         </div>
 
         {!isEdit && (
-          <div className="mb-4 flex gap-2 rounded-xl bg-slate-900 p-1">
+          <div className="mb-4 flex gap-2 rounded-xl bg-slate-100 p-1 dark:bg-slate-900">
             <button
               type="button"
               onClick={() => setRecurring(false)}
               className={`flex-1 rounded-lg py-2 text-sm font-medium ${
-                !recurring ? "bg-blue-500 text-white" : "text-slate-400"
+                !recurring ? "bg-blue-500 text-white" : "text-slate-500 dark:text-slate-400"
               }`}
             >
               Ponctuel
@@ -114,7 +114,7 @@ export function IncomeAdd({
               type="button"
               onClick={() => setRecurring(true)}
               className={`flex-1 rounded-lg py-2 text-sm font-medium ${
-                recurring ? "bg-blue-500 text-white" : "text-slate-400"
+                recurring ? "bg-blue-500 text-white" : "text-slate-500 dark:text-slate-400"
               }`}
             >
               Récurrent mensuel
@@ -128,7 +128,7 @@ export function IncomeAdd({
             placeholder="Libellé (ex: Salaire)"
             value={label}
             onChange={(e) => setLabel(e.target.value)}
-            className="rounded-xl bg-slate-900 p-3 text-base outline-none"
+            className="rounded-xl bg-slate-100 p-3 text-base outline-none dark:bg-slate-900"
             required
           />
           <input
@@ -137,7 +137,7 @@ export function IncomeAdd({
             placeholder="Montant"
             value={amount}
             onChange={(e) => setAmount(e.target.value)}
-            className="rounded-xl bg-slate-900 p-3 text-base outline-none"
+            className="rounded-xl bg-slate-100 p-3 text-base outline-none dark:bg-slate-900"
             required
           />
 
@@ -150,7 +150,7 @@ export function IncomeAdd({
                 max={31}
                 value={dayOfMonth}
                 onChange={(e) => setDayOfMonth(e.target.value)}
-                className="rounded-xl bg-slate-900 p-3 text-base outline-none"
+                className="rounded-xl bg-slate-100 p-3 text-base outline-none dark:bg-slate-900"
                 required
               />
               <label className="text-xs text-slate-500">Date de début</label>
@@ -158,7 +158,7 @@ export function IncomeAdd({
                 type="date"
                 value={startDate}
                 onChange={(e) => setStartDate(e.target.value)}
-                className="rounded-xl bg-slate-900 p-3 text-base outline-none"
+                className="rounded-xl bg-slate-100 p-3 text-base outline-none dark:bg-slate-900"
                 required
               />
               <label className="text-xs text-slate-500">Date de fin (optionnel)</label>
@@ -166,7 +166,7 @@ export function IncomeAdd({
                 type="date"
                 value={endDate}
                 onChange={(e) => setEndDate(e.target.value)}
-                className="rounded-xl bg-slate-900 p-3 text-base outline-none"
+                className="rounded-xl bg-slate-100 p-3 text-base outline-none dark:bg-slate-900"
               />
             </>
           ) : (
@@ -174,7 +174,7 @@ export function IncomeAdd({
               type="date"
               value={date}
               onChange={(e) => setDate(e.target.value)}
-              className="rounded-xl bg-slate-900 p-3 text-base outline-none"
+              className="rounded-xl bg-slate-100 p-3 text-base outline-none dark:bg-slate-900"
               required
             />
           )}

@@ -27,7 +27,7 @@ function SubcategoryAddRow({ categoryId }: { categoryId: string }) {
     return (
       <button
         onClick={() => setShowForm(true)}
-        className="flex items-center gap-1 text-xs text-blue-400"
+        className="flex items-center gap-1 text-xs text-blue-600 dark:text-blue-400"
       >
         <Plus size={12} /> Ajouter une sous-catégorie
       </button>
@@ -42,7 +42,7 @@ function SubcategoryAddRow({ categoryId }: { categoryId: string }) {
         placeholder="Nom de la sous-catégorie"
         value={name}
         onChange={(e) => setName(e.target.value)}
-        className="flex-1 rounded-lg bg-slate-900 p-2 text-base outline-none"
+        className="flex-1 rounded-lg bg-slate-100 p-2 text-base outline-none dark:bg-slate-900"
       />
       <button type="submit" className="text-xs font-semibold text-blue-400">
         Ajouter
@@ -86,7 +86,7 @@ function CategoryRow({ category }: { category: Category }) {
           <CategoryIcon icon={category.icon} color={category.color} size={14} />
           <span className="font-medium">{category.name}</span>
           {category.isDefault && (
-            <span className="rounded-full bg-slate-800 px-2 py-0.5 text-[10px] text-slate-400">
+            <span className="rounded-full bg-slate-200 px-2 py-0.5 text-[10px] text-slate-600 dark:bg-slate-800 dark:text-slate-400">
               protégée
             </span>
           )}
@@ -94,7 +94,7 @@ function CategoryRow({ category }: { category: Category }) {
         <div className="flex items-center gap-2">
           <button
             onClick={() => setEditing(true)}
-            className="rounded-full p-2 text-slate-400 hover:bg-slate-800"
+            className="rounded-full p-2 text-slate-500 hover:bg-slate-200 dark:text-slate-400 dark:hover:bg-slate-800"
             aria-label="Modifier"
           >
             <Pencil size={16} />
@@ -102,7 +102,7 @@ function CategoryRow({ category }: { category: Category }) {
           {!category.isDefault && (
             <button
               onClick={handleDeleteCategory}
-              className="rounded-full p-2 text-slate-400 hover:bg-slate-800"
+              className="rounded-full p-2 text-slate-500 hover:bg-slate-200 dark:text-slate-400 dark:hover:bg-slate-800"
               aria-label="Supprimer"
             >
               <Trash2 size={16} />
@@ -112,13 +112,13 @@ function CategoryRow({ category }: { category: Category }) {
       </div>
 
       {expanded && (
-        <div className="ml-6 mt-2 flex flex-col gap-2 border-l border-slate-800 pl-4">
+        <div className="ml-6 mt-2 flex flex-col gap-2 border-l border-slate-200 pl-4 dark:border-slate-800">
           {category.subcategories.map((sub) => (
             <div key={sub.id} className="flex items-center justify-between text-sm">
-              <span className="text-slate-300">{sub.name}</span>
+              <span className="text-slate-700 dark:text-slate-300">{sub.name}</span>
               <button
                 onClick={() => deleteSubcategory.mutate(sub.id)}
-                className="text-slate-500 hover:text-red-400"
+                className="text-slate-500 hover:text-red-500 dark:hover:text-red-400"
                 aria-label="Supprimer la sous-catégorie"
               >
                 <Trash2 size={14} />
@@ -141,7 +141,7 @@ export function CategoriesPanel() {
   return (
     <div>
       <div className="mb-3 flex items-center justify-between">
-        <h2 className="text-sm font-medium text-slate-400">Catégories</h2>
+        <h2 className="text-sm font-medium text-slate-500 dark:text-slate-400">Catégories</h2>
         <button
           onClick={() => setCreating(true)}
           className="flex items-center gap-1 rounded-full bg-blue-500 px-3 py-1.5 text-xs font-semibold text-white"
@@ -152,7 +152,7 @@ export function CategoriesPanel() {
 
       {isLoading && <p className="py-4 text-sm text-slate-500">Chargement...</p>}
 
-      <ul className="divide-y divide-slate-800">
+      <ul className="divide-y divide-slate-200 dark:divide-slate-800">
         {categories.map((c) => (
           <CategoryRow key={c.id} category={c} />
         ))}

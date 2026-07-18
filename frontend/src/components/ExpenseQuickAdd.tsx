@@ -80,7 +80,7 @@ export function ExpenseQuickAdd({
   return (
     <div className="fixed inset-0 z-50 flex items-end bg-black/60" onClick={onClose}>
       <div
-        className="max-h-[90vh] w-full overflow-y-auto rounded-t-3xl bg-slate-950 p-5 pb-[calc(1.25rem+env(safe-area-inset-bottom))]"
+        className="max-h-[90vh] w-full overflow-y-auto rounded-t-3xl bg-white p-5 pb-[calc(1.25rem+env(safe-area-inset-bottom))] dark:bg-slate-950"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="mb-4 flex items-center justify-between">
@@ -111,7 +111,7 @@ export function ExpenseQuickAdd({
           placeholder="0,00 €"
           value={amount}
           onChange={(e) => setAmount(e.target.value)}
-          className="mb-5 w-full rounded-xl bg-slate-900 p-4 text-center text-3xl font-bold outline-none"
+          className="mb-5 w-full rounded-xl bg-slate-100 p-4 text-center text-3xl font-bold outline-none dark:bg-slate-900"
         />
 
         <CategoryGrid
@@ -128,8 +128,8 @@ export function ExpenseQuickAdd({
                 onClick={() => setSubcategory(sub)}
                 className={`rounded-full border px-3 py-1.5 text-xs ${
                   subcategory?.id === sub.id
-                    ? "border-blue-500 bg-blue-500/10 text-blue-300"
-                    : "border-slate-800 text-slate-300"
+                    ? "border-blue-500 bg-blue-500/10 text-blue-600 dark:text-blue-300"
+                    : "border-slate-300 text-slate-700 dark:border-slate-800 dark:text-slate-300"
                 }`}
               >
                 {sub.name}
@@ -143,14 +143,14 @@ export function ExpenseQuickAdd({
             type="date"
             value={date}
             onChange={(e) => setDate(e.target.value)}
-            className="rounded-xl bg-slate-900 p-3 text-base outline-none"
+            className="rounded-xl bg-slate-100 p-3 text-base outline-none dark:bg-slate-900"
           />
           <input
             type="text"
             placeholder="Note (optionnel)"
             value={note}
             onChange={(e) => setNote(e.target.value)}
-            className="rounded-xl bg-slate-900 p-3 text-base outline-none"
+            className="rounded-xl bg-slate-100 p-3 text-base outline-none dark:bg-slate-900"
           />
         </div>
 

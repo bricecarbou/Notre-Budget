@@ -23,7 +23,7 @@ export function IncomeTemplatesList() {
   return (
     <div>
       <div className="mb-3 flex items-center justify-between">
-        <h2 className="text-sm font-medium text-slate-400">Revenus récurrents</h2>
+        <h2 className="text-sm font-medium text-slate-500 dark:text-slate-400">Revenus récurrents</h2>
         {!isAdmin && (
           <button
             onClick={() => setEditing("new")}
@@ -39,14 +39,14 @@ export function IncomeTemplatesList() {
         <p className="py-4 text-sm text-slate-500">Aucun revenu récurrent.</p>
       )}
 
-      <ul className="divide-y divide-slate-800">
+      <ul className="divide-y divide-slate-200 dark:divide-slate-800">
         {templates.map((t) => (
           <li key={t.id} className="flex items-center justify-between py-3">
             <div>
               <div className="flex items-center gap-2 font-medium">
                 {t.label}
                 {!t.active && (
-                  <span className="rounded-full bg-slate-800 px-2 py-0.5 text-[10px] text-slate-400">
+                  <span className="rounded-full bg-slate-200 px-2 py-0.5 text-[10px] text-slate-600 dark:bg-slate-800 dark:text-slate-400">
                     Inactif
                   </span>
                 )}
@@ -59,7 +59,9 @@ export function IncomeTemplatesList() {
               {isAdmin ? (
                 <span
                   className={`rounded-full px-2 py-1 text-[10px] font-semibold ${
-                    t.active ? "bg-emerald-500/10 text-emerald-400" : "bg-slate-800 text-slate-400"
+                    t.active
+                      ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
+                      : "bg-slate-200 text-slate-600 dark:bg-slate-800 dark:text-slate-400"
                   }`}
                 >
                   {t.active ? "Actif" : "Inactif"}
@@ -69,21 +71,23 @@ export function IncomeTemplatesList() {
                   <button
                     onClick={() => updateTemplate.mutate({ id: t.id, active: !t.active })}
                     className={`rounded-full px-2 py-1 text-[10px] font-semibold ${
-                      t.active ? "bg-emerald-500/10 text-emerald-400" : "bg-slate-800 text-slate-400"
+                      t.active
+                        ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
+                        : "bg-slate-200 text-slate-600 dark:bg-slate-800 dark:text-slate-400"
                     }`}
                   >
                     {t.active ? "Actif" : "Inactif"}
                   </button>
                   <button
                     onClick={() => setEditing(t)}
-                    className="rounded-full p-2 text-slate-400 hover:bg-slate-800"
+                    className="rounded-full p-2 text-slate-500 hover:bg-slate-200 dark:text-slate-400 dark:hover:bg-slate-800"
                     aria-label="Modifier"
                   >
                     <Pencil size={16} />
                   </button>
                   <button
                     onClick={() => deleteTemplate.mutate(t.id)}
-                    className="rounded-full p-2 text-slate-400 hover:bg-slate-800"
+                    className="rounded-full p-2 text-slate-500 hover:bg-slate-200 dark:text-slate-400 dark:hover:bg-slate-800"
                     aria-label="Supprimer"
                   >
                     <Trash2 size={16} />

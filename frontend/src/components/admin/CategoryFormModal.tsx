@@ -44,7 +44,7 @@ export function CategoryFormModal({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4" onClick={onClose}>
       <div
-        className="w-full max-w-sm rounded-2xl bg-slate-950 p-5"
+        className="w-full max-w-sm rounded-2xl bg-white p-5 dark:bg-slate-950"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="mb-4 flex items-center justify-between">
@@ -63,7 +63,7 @@ export function CategoryFormModal({
             value={name}
             onChange={(e) => setName(e.target.value)}
             disabled={locked}
-            className="rounded-xl bg-slate-900 p-3 text-base outline-none disabled:opacity-50"
+            className="rounded-xl bg-slate-100 p-3 text-base outline-none disabled:opacity-50 dark:bg-slate-900"
             required
           />
           <input
@@ -71,15 +71,15 @@ export function CategoryFormModal({
             placeholder="Icône (nom lucide-react, ex: ShoppingCart)"
             value={icon}
             onChange={(e) => setIcon(e.target.value)}
-            className="rounded-xl bg-slate-900 p-3 text-base outline-none"
+            className="rounded-xl bg-slate-100 p-3 text-base outline-none dark:bg-slate-900"
           />
           <div className="flex items-center gap-3">
-            <label className="text-sm text-slate-400">Couleur</label>
+            <label className="text-sm text-slate-500 dark:text-slate-400">Couleur</label>
             <input
               type="color"
               value={color}
               onChange={(e) => setColor(e.target.value)}
-              className="h-9 w-16 rounded-lg bg-slate-900"
+              className="h-9 w-16 rounded-lg bg-slate-100 dark:bg-slate-900"
             />
           </div>
 

@@ -44,7 +44,7 @@ export function UserFormModal({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4" onClick={onClose}>
       <div
-        className="w-full max-w-sm rounded-2xl bg-slate-950 p-5"
+        className="w-full max-w-sm rounded-2xl bg-white p-5 dark:bg-slate-950"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="mb-4 flex items-center justify-between">
@@ -63,7 +63,7 @@ export function UserFormModal({
             value={login}
             onChange={(e) => setLogin(e.target.value)}
             disabled={isEdit}
-            className="rounded-xl bg-slate-900 p-3 text-base outline-none disabled:opacity-50"
+            className="rounded-xl bg-slate-100 p-3 text-base outline-none disabled:opacity-50 dark:bg-slate-900"
             required
           />
           <input
@@ -71,13 +71,13 @@ export function UserFormModal({
             placeholder="Nom"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className="rounded-xl bg-slate-900 p-3 text-base outline-none"
+            className="rounded-xl bg-slate-100 p-3 text-base outline-none dark:bg-slate-900"
             required
           />
           <select
             value={role}
             onChange={(e) => setRole(e.target.value as Role)}
-            className="rounded-xl bg-slate-900 p-3 text-base outline-none"
+            className="rounded-xl bg-slate-100 p-3 text-base outline-none dark:bg-slate-900"
           >
             <option value="USER">Utilisateur</option>
             <option value="ADMIN">Administrateur</option>
@@ -87,7 +87,7 @@ export function UserFormModal({
             placeholder={isEdit ? "Nouveau mot de passe (optionnel)" : "Mot de passe"}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="rounded-xl bg-slate-900 p-3 text-base outline-none"
+            className="rounded-xl bg-slate-100 p-3 text-base outline-none dark:bg-slate-900"
             required={!isEdit}
             minLength={4}
           />

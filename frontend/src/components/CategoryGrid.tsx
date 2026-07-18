@@ -38,7 +38,7 @@ export function CategoryGrid({
             >
               <Icon size={18} className="text-white" strokeWidth={2.25} />
             </span>
-            <span className="line-clamp-1 text-center text-[13px] font-semibold tracking-tight text-slate-100">
+            <span className="line-clamp-1 text-center text-[13px] font-semibold tracking-tight text-slate-900 dark:text-slate-100">
               {category.name}
             </span>
           </button>

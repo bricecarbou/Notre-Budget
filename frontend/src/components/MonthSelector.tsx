@@ -13,7 +13,7 @@ export function MonthSelector() {
     <div className="flex items-center justify-center gap-4 py-2">
       <button
         onClick={goToPreviousMonth}
-        className="rounded-full p-2 hover:bg-slate-800"
+        className="rounded-full p-2 hover:bg-slate-200 dark:hover:bg-slate-800"
         aria-label="Mois précédent"
       >
         <ChevronLeft size={20} />
@@ -23,7 +23,7 @@ export function MonthSelector() {
       </span>
       <button
         onClick={goToNextMonth}
-        className="rounded-full p-2 hover:bg-slate-800"
+        className="rounded-full p-2 hover:bg-slate-200 dark:hover:bg-slate-800"
         aria-label="Mois suivant"
       >
         <ChevronRight size={20} />

@@ -32,7 +32,7 @@ export function Login() {
           placeholder="Login"
           value={login}
           onChange={(e) => setLogin(e.target.value)}
-          className="rounded-xl bg-slate-900 p-3 outline-none"
+          className="rounded-xl bg-slate-100 p-3 outline-none dark:bg-slate-900"
           required
         />
         <input
@@ -40,7 +40,7 @@ export function Login() {
           placeholder="Mot de passe"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          className="rounded-xl bg-slate-900 p-3 outline-none"
+          className="rounded-xl bg-slate-100 p-3 outline-none dark:bg-slate-900"
           required
         />
         {loginMutation.isError && (

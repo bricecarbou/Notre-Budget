@@ -10,7 +10,7 @@ export function CategoryBreakdownTable({ breakdown }: { breakdown: CategoryBreak
 
   return (
     <table className="mt-4 w-full text-sm">
-      <tbody className="divide-y divide-slate-800">
+      <tbody className="divide-y divide-slate-200 dark:divide-slate-800">
         {breakdown.map((c) => (
           <tr key={c.categoryId}>
             <td className="py-2 pr-2">
@@ -19,7 +19,7 @@ export function CategoryBreakdownTable({ breakdown }: { breakdown: CategoryBreak
                 {c.categoryName}
               </span>
             </td>
-            <td className="py-2 text-right tabular-nums text-slate-400">
+            <td className="py-2 text-right tabular-nums text-slate-500 dark:text-slate-400">
               {c.percentage.toFixed(1)}%
             </td>
             <td className="py-2 pl-3 text-right tabular-nums font-medium">

@@ -13,7 +13,7 @@ export function UsersPanel() {
   return (
     <div>
       <div className="mb-3 flex items-center justify-between">
-        <h2 className="text-sm font-medium text-slate-400">Utilisateurs</h2>
+        <h2 className="text-sm font-medium text-slate-500 dark:text-slate-400">Utilisateurs</h2>
         <button
           onClick={() => setEditing("new")}
           className="flex items-center gap-1 rounded-full bg-blue-500 px-3 py-1.5 text-xs font-semibold text-white"
@@ -24,17 +24,17 @@ export function UsersPanel() {
 
       {isLoading && <p className="py-4 text-sm text-slate-500">Chargement...</p>}
 
-      <ul className="divide-y divide-slate-800">
+      <ul className="divide-y divide-slate-200 dark:divide-slate-800">
         {users.map((u) => (
           <li key={u.id} className="flex items-center justify-between py-3">
             <div>
               <div className="flex items-center gap-2 font-medium">
                 {u.name}
-                <span className="rounded-full bg-slate-800 px-2 py-0.5 text-[10px] uppercase text-slate-400">
+                <span className="rounded-full bg-slate-200 px-2 py-0.5 text-[10px] uppercase text-slate-600 dark:bg-slate-800 dark:text-slate-400">
                   {u.role}
                 </span>
                 {!u.active && (
-                  <span className="rounded-full bg-red-500/10 px-2 py-0.5 text-[10px] text-red-400">
+                  <span className="rounded-full bg-red-500/10 px-2 py-0.5 text-[10px] text-red-500 dark:text-red-400">
                     Désactivé
                   </span>
                 )}
@@ -44,7 +44,7 @@ export function UsersPanel() {
             <div className="flex items-center gap-2">
               <button
                 onClick={() => setEditing(u)}
-                className="rounded-full p-2 text-slate-400 hover:bg-slate-800"
+                className="rounded-full p-2 text-slate-500 hover:bg-slate-200 dark:text-slate-400 dark:hover:bg-slate-800"
                 aria-label="Modifier"
               >
                 <Pencil size={16} />
@@ -55,7 +55,7 @@ export function UsersPanel() {
                     ? deactivateUser.mutate(u.id)
                     : updateUser.mutate({ id: u.id, active: true })
                 }
-                className="rounded-full p-2 text-slate-400 hover:bg-slate-800"
+                className="rounded-full p-2 text-slate-500 hover:bg-slate-200 dark:text-slate-400 dark:hover:bg-slate-800"
                 aria-label={u.active ? "Désactiver" : "Réactiver"}
               >
                 {u.active ? <UserX size={16} /> : <UserCheck size={16} />}

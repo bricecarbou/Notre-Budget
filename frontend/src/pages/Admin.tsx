@@ -11,11 +11,11 @@ export function Admin() {
     <div>
       <h1 className="mb-4 text-xl font-semibold">Administration</h1>
 
-      <div className="mb-4 flex gap-2 rounded-xl bg-slate-900 p-1">
+      <div className="mb-4 flex gap-2 rounded-xl bg-slate-100 p-1 dark:bg-slate-900">
         <button
           onClick={() => setTab("users")}
           className={`flex-1 rounded-lg py-2 text-sm font-medium ${
-            tab === "users" ? "bg-blue-500 text-white" : "text-slate-400"
+            tab === "users" ? "bg-blue-500 text-white" : "text-slate-500 dark:text-slate-400"
           }`}
         >
           Utilisateurs
@@ -23,7 +23,7 @@ export function Admin() {
         <button
           onClick={() => setTab("categories")}
           className={`flex-1 rounded-lg py-2 text-sm font-medium ${
-            tab === "categories" ? "bg-blue-500 text-white" : "text-slate-400"
+            tab === "categories" ? "bg-blue-500 text-white" : "text-slate-500 dark:text-slate-400"
           }`}
         >
           Catégories

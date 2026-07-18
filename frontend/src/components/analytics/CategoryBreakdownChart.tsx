@@ -1,5 +1,5 @@
 import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from "recharts";
-import { CHART_TOKENS } from "@/lib/chartTokens";
+import { useChartTokens } from "@/lib/chartTokens";
 import { FALLBACK_CATEGORY_COLOR } from "@/lib/categoryIcon";
 import type { CategoryBreakdown } from "@/types";
 
@@ -31,15 +31,16 @@ function foldIntoSlices(breakdown: CategoryBreakdown[]) {
 }
 
 function CustomTooltip({ active, payload }: any) {
+  const tokens = useChartTokens();
   if (!active || !payload?.length) return null;
   const item = payload[0].payload;
   return (
     <div
-      className="rounded-lg border border-slate-800 px-3 py-2 text-xs shadow-lg"
-      style={{ backgroundColor: CHART_TOKENS.surface, color: CHART_TOKENS.textPrimary }}
+      className="rounded-lg border border-slate-200 px-3 py-2 text-xs shadow-lg dark:border-slate-800"
+      style={{ backgroundColor: tokens.surface, color: tokens.textPrimary }}
     >
       <div className="font-semibold">{item.categoryName}</div>
-      <div style={{ color: CHART_TOKENS.textSecondary }}>
+      <div style={{ color: tokens.textSecondary }}>
         {formatEuros(item.amount)} · {item.percentage.toFixed(1)}%
       </div>
     </div>
@@ -47,6 +48,8 @@ function CustomTooltip({ active, payload }: any) {
 }
 
 export function CategoryBreakdownChart({ breakdown }: { breakdown: CategoryBreakdown[] }) {
+  const tokens = useChartTokens();
+
   if (breakdown.length === 0) {
     return (
       <p className="py-8 text-center text-sm text-slate-500">
@@ -68,7 +71,7 @@ export function CategoryBreakdownChart({ breakdown }: { breakdown: CategoryBreak
             innerRadius="45%"
             outerRadius="75%"
             paddingAngle={2}
-            stroke={CHART_TOKENS.surface}
+            stroke={tokens.surface}
             strokeWidth={2}
           >
             {slices.map((slice) => (
@@ -79,7 +82,7 @@ export function CategoryBreakdownChart({ breakdown }: { breakdown: CategoryBreak
           <Legend
             verticalAlign="bottom"
             height={48}
-            formatter={(value) => <span style={{ color: CHART_TOKENS.textSecondary }}>{value}</span>}
+            formatter={(value) => <span style={{ color: tokens.textSecondary }}>{value}</span>}
           />
         </PieChart>
       </ResponsiveContainer>

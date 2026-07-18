@@ -49,13 +49,13 @@ export function Dashboard() {
           {!isAdmin && (
             <button
               onClick={() => setShowIncomeAdd(true)}
-              className="mt-3 flex w-full items-center justify-center gap-1 rounded-xl border border-dashed border-slate-700 py-2 text-sm text-slate-400"
+              className="mt-3 flex w-full items-center justify-center gap-1 rounded-xl border border-dashed border-slate-300 py-2 text-sm text-slate-500 dark:border-slate-700 dark:text-slate-400"
             >
               <Plus size={16} /> Ajouter un revenu
             </button>
           )}
 
-          <h2 className="mb-2 mt-6 text-sm font-medium text-slate-400">
+          <h2 className="mb-2 mt-6 text-sm font-medium text-slate-500 dark:text-slate-400">
             Dernières transactions
           </h2>
           <p className="mb-2 text-xs text-slate-500">

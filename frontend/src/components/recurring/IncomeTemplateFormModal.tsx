@@ -51,7 +51,7 @@ export function IncomeTemplateFormModal({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4" onClick={onClose}>
       <div
-        className="w-full max-w-sm rounded-2xl bg-slate-950 p-5"
+        className="w-full max-w-sm rounded-2xl bg-white p-5 dark:bg-slate-950"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="mb-4 flex items-center justify-between">
@@ -69,7 +69,7 @@ export function IncomeTemplateFormModal({
             placeholder="Libellé"
             value={label}
             onChange={(e) => setLabel(e.target.value)}
-            className="rounded-xl bg-slate-900 p-3 text-base outline-none"
+            className="rounded-xl bg-slate-100 p-3 text-base outline-none dark:bg-slate-900"
             required
           />
           <input
@@ -78,7 +78,7 @@ export function IncomeTemplateFormModal({
             placeholder="Montant"
             value={amount}
             onChange={(e) => setAmount(e.target.value)}
-            className="rounded-xl bg-slate-900 p-3 text-base outline-none"
+            className="rounded-xl bg-slate-100 p-3 text-base outline-none dark:bg-slate-900"
             required
           />
           <label className="text-xs text-slate-500">Jour du mois</label>
@@ -88,7 +88,7 @@ export function IncomeTemplateFormModal({
             max={31}
             value={dayOfMonth}
             onChange={(e) => setDayOfMonth(e.target.value)}
-            className="rounded-xl bg-slate-900 p-3 text-base outline-none"
+            className="rounded-xl bg-slate-100 p-3 text-base outline-none dark:bg-slate-900"
             required
           />
           <label className="text-xs text-slate-500">Date de début</label>
@@ -96,7 +96,7 @@ export function IncomeTemplateFormModal({
             type="date"
             value={startDate}
             onChange={(e) => setStartDate(e.target.value)}
-            className="rounded-xl bg-slate-900 p-3 text-base outline-none"
+            className="rounded-xl bg-slate-100 p-3 text-base outline-none dark:bg-slate-900"
             required
           />
           <label className="text-xs text-slate-500">Date de fin (optionnel)</label>
@@ -104,7 +104,7 @@ export function IncomeTemplateFormModal({
             type="date"
             value={endDate}
             onChange={(e) => setEndDate(e.target.value)}
-            className="rounded-xl bg-slate-900 p-3 text-base outline-none"
+            className="rounded-xl bg-slate-100 p-3 text-base outline-none dark:bg-slate-900"
           />
 
           {error && <p className="text-sm text-red-500">Impossible d'enregistrer.</p>}

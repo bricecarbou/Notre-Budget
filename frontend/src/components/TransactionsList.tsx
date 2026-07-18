@@ -22,7 +22,7 @@ export function TransactionsList({
   }
 
   return (
-    <ul className="divide-y divide-slate-800">
+    <ul className="divide-y divide-slate-200 dark:divide-slate-800">
       {transactions.map((t) => (
         <li key={`${t.type}-${t.id}`}>
           <button
@@ -48,7 +48,9 @@ export function TransactionsList({
             </div>
             <div
               className={`font-semibold ${
-                t.type === "income" ? "text-emerald-400" : "text-slate-100"
+                t.type === "income"
+                  ? "text-emerald-600 dark:text-emerald-400"
+                  : "text-slate-900 dark:text-slate-100"
               }`}
             >
               {t.type === "income" ? "+" : "-"}
