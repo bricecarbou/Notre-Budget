@@ -39,7 +39,7 @@ export function Dashboard() {
 
       {isLoading && <p className="py-8 text-center text-slate-500">Chargement...</p>}
       {isError && (
-        <p className="py-8 text-center text-red-500">Impossible de charger le dashboard.</p>
+        <p className="py-8 text-center text-red-500">Impossible de charger le tableau de bord.</p>
       )}
 
       {dashboard && (

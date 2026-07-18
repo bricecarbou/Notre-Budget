@@ -7,14 +7,14 @@ function shiftMonth(year: number, month: number, offset: number) {
   return { year: d.getUTCFullYear(), month: d.getUTCMonth() + 1 };
 }
 
-export async function getMonthlyTrend(months: number) {
+export async function getMonthlyTrend(months: number, endYear?: number, endMonth?: number) {
   const now = new Date();
-  const currentYear = now.getUTCFullYear();
-  const currentMonth = now.getUTCMonth() + 1;
+  const referenceYear = endYear ?? now.getUTCFullYear();
+  const referenceMonth = endMonth ?? now.getUTCMonth() + 1;
 
   const results = [];
   for (let offset = -(months - 1); offset <= 0; offset++) {
-    const { year, month } = shiftMonth(currentYear, currentMonth, offset);
+    const { year, month } = shiftMonth(referenceYear, referenceMonth, offset);
     const dashboard = await getDashboard(year, month);
     results.push({
       year,
@@ -28,18 +28,18 @@ export async function getMonthlyTrend(months: number) {
   return results;
 }
 
-export async function getByCategory(year: number, month: number) {
-  const { start, end } = monthRange(year, month);
+// `months` agrège la période se terminant au mois donné (1 = ce mois
+// seulement, 3/6/12 = les N derniers mois inclus). Chaque dépense récurrente
+// active est comptée une fois par mois où elle l'était, pas une seule fois
+// pour toute la période.
+export async function getByCategory(year: number, month: number, months = 1) {
+  const rangeStart = shiftMonth(year, month, -(months - 1));
+  const overallStart = monthRange(rangeStart.year, rangeStart.month).start;
+  const overallEnd = monthRange(year, month).end;
 
-  const activeTemplateFilter = {
-    active: true,
-    startDate: { lte: end },
-    OR: [{ endDate: null }, { endDate: { gte: start } }],
-  };
-
-  const [expenses, expenseTemplates, categories] = await Promise.all([
-    prisma.expense.findMany({ where: { date: { gte: start, lte: end } } }),
-    prisma.expenseTemplate.findMany({ where: activeTemplateFilter }),
+  const [expenses, allExpenseTemplates, categories] = await Promise.all([
+    prisma.expense.findMany({ where: { date: { gte: overallStart, lte: overallEnd } } }),
+    prisma.expenseTemplate.findMany({ where: { active: true } }),
     prisma.category.findMany(),
   ]);
 
@@ -50,11 +50,19 @@ export async function getByCategory(year: number, month: number) {
       (totalsByCategory.get(e.categoryId) ?? 0) + Number(e.amount)
     );
   }
-  for (const t of expenseTemplates) {
-    totalsByCategory.set(
-      t.categoryId,
-      (totalsByCategory.get(t.categoryId) ?? 0) + Number(t.amount)
-    );
+
+  for (let offset = -(months - 1); offset <= 0; offset++) {
+    const { year: y, month: m } = shiftMonth(year, month, offset);
+    const { start, end } = monthRange(y, m);
+    for (const t of allExpenseTemplates) {
+      const activeThisMonth = t.startDate <= end && (t.endDate === null || t.endDate >= start);
+      if (activeThisMonth) {
+        totalsByCategory.set(
+          t.categoryId,
+          (totalsByCategory.get(t.categoryId) ?? 0) + Number(t.amount)
+        );
+      }
+    }
   }
 
   const totalDepenses = [...totalsByCategory.values()].reduce((a, b) => a + b, 0);

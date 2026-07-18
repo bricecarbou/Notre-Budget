@@ -9,7 +9,11 @@ const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       retry: 1,
-      staleTime: 30_000,
+      staleTime: 10_000,
+      // Rafraîchissement automatique en arrière-plan : un membre voit les
+      // ajouts d'un autre sans recharger la page. Se met en pause quand
+      // l'onglet n'est pas visible (comportement par défaut de React Query).
+      refetchInterval: 15_000,
     },
   },
 });

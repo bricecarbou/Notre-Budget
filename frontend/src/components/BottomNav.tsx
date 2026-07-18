@@ -14,7 +14,7 @@ export function BottomNav({ onAddClick }: { onAddClick: () => void }) {
     <nav className="fixed bottom-0 left-0 right-0 z-40 flex items-center justify-around border-t border-slate-200 bg-white/95 px-2 pb-[calc(0.5rem+env(safe-area-inset-bottom))] pt-2 backdrop-blur dark:border-slate-800 dark:bg-slate-950/95">
       <NavLink to="/" end className={linkClass}>
         <LayoutDashboard size={20} />
-        Dashboard
+        Tableau de bord
       </NavLink>
       <NavLink to="/analytics" className={linkClass}>
         <BarChart3 size={20} />

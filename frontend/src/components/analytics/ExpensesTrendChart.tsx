@@ -6,7 +6,6 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip,
-  ReferenceLine,
 } from "recharts";
 import { useChartTokens } from "@/lib/chartTokens";
 import type { MonthlyTrendPoint } from "@/types";
@@ -36,15 +35,15 @@ function CustomTooltip({ active, payload, label }: any) {
   );
 }
 
-export function ResteAVivreTrendChart({ data }: { data: MonthlyTrendPoint[] }) {
+export function ExpensesTrendChart({ data }: { data: MonthlyTrendPoint[] }) {
   const tokens = useChartTokens();
   const chartData = data.map((d) => ({
     label: `${MONTH_LABELS_SHORT[d.month - 1]} ${String(d.year).slice(2)}`,
-    resteAVivreActuel: d.resteAVivreActuel,
+    totalDepenses: d.totalDepensesRecurrentes + d.totalDepensesPonctuelles,
   }));
 
   return (
-    <div className="h-64 w-full">
+    <div className="h-56 w-full">
       <ResponsiveContainer width="100%" height="100%">
         <LineChart data={chartData} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
           <CartesianGrid stroke={tokens.gridline} strokeDasharray="0" vertical={false} />
@@ -61,11 +60,10 @@ export function ResteAVivreTrendChart({ data }: { data: MonthlyTrendPoint[] }) {
             width={56}
             tickFormatter={(v) => formatEuros(v)}
           />
-          <ReferenceLine y={0} stroke={tokens.baseline} />
           <Tooltip content={<CustomTooltip />} cursor={{ stroke: tokens.baseline }} />
           <Line
             type="monotone"
-            dataKey="resteAVivreActuel"
+            dataKey="totalDepenses"
             stroke={tokens.seriesPrimary}
             strokeWidth={2}
             dot={{ r: 4, fill: tokens.seriesPrimary, stroke: tokens.surface, strokeWidth: 2 }}
