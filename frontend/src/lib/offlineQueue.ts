@@ -82,33 +82,48 @@ export function removeQueuedItem(localId: string) {
   writeQueue(readQueue().filter((item) => item.localId !== localId));
 }
 
+// useOfflineSync déclenche une tentative au montage, au retour réseau ET en
+// filet de sécurité toutes les 20s — sans ce verrou, deux déclenchements
+// proches (ex: l'évènement "online" pile pendant le tick du filet, ou le
+// double montage des effets en StrictMode côté dev) liraient la file avant
+// que l'un ou l'autre ait fini de l'écrire, et enverraient chacun les mêmes
+// items : c'est exactement ce qui causait les doublons.
+let flushInProgress = false;
+
 // Rejoue la file dans l'ordre. Un échec réseau garde l'item pour la
 // prochaine tentative ; une erreur applicative (ex: catégorie supprimée
 // entre-temps) le retire aussi — mieux vaut ne pas bloquer toute la file
 // indéfiniment pour un seul item cassé.
 export async function flushOfflineQueue(): Promise<{ synced: number }> {
+  if (flushInProgress) return { synced: 0 };
+
   const items = readQueue();
   if (items.length === 0) return { synced: 0 };
 
-  const remaining: QueuedItem[] = [];
-  let synced = 0;
+  flushInProgress = true;
+  try {
+    const remaining: QueuedItem[] = [];
+    let synced = 0;
 
-  for (const item of items) {
-    try {
-      if (item.type === "expense") {
-        await apiClient.post("/expenses", item.payload);
-      } else {
-        await apiClient.post("/incomes", item.payload);
+    for (const item of items) {
+      try {
+        if (item.type === "expense") {
+          await apiClient.post("/expenses", item.payload);
+        } else {
+          await apiClient.post("/incomes", item.payload);
+        }
+        synced++;
+      } catch (err) {
+        if (isNetworkError(err)) {
+          remaining.push(item);
+        }
+        // erreur applicative : on abandonne cet item plutôt que de bloquer les suivants
       }
-      synced++;
-    } catch (err) {
-      if (isNetworkError(err)) {
-        remaining.push(item);
-      }
-      // erreur applicative : on abandonne cet item plutôt que de bloquer les suivants
     }
-  }
 
-  writeQueue(remaining);
-  return { synced };
+    writeQueue(remaining);
+    return { synced };
+  } finally {
+    flushInProgress = false;
+  }
 }
