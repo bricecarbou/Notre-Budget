@@ -4,6 +4,8 @@ import { Plus } from "lucide-react";
 import { useMonthStore } from "@/store/monthStore";
 import { useDashboard } from "@/hooks/useDashboard";
 import { useAuthStore } from "@/store/authStore";
+import { useOnlineStatus } from "@/hooks/useOnlineStatus";
+import { usePendingTransactions, type PendingTransaction } from "@/hooks/usePendingTransactions";
 import { MonthSelector } from "@/components/MonthSelector";
 import { BudgetSummaryCard } from "@/components/BudgetSummaryCard";
 import { TransactionsList } from "@/components/TransactionsList";
@@ -15,11 +17,14 @@ export function Dashboard() {
   const { year, month } = useMonthStore();
   const { data: dashboard, isLoading, isError } = useDashboard(year, month);
   const isAdmin = useAuthStore((s) => s.user?.role === "ADMIN");
+  const online = useOnlineStatus();
+  const pendingTransactions = usePendingTransactions();
   const [showIncomeAdd, setShowIncomeAdd] = useState(false);
   const [editingExpense, setEditingExpense] = useState<EditableExpense | null>(null);
   const [editingIncome, setEditingIncome] = useState<EditableIncome | null>(null);
 
-  function handleSelectTransaction(t: Transaction) {
+  function handleSelectTransaction(t: Transaction | PendingTransaction) {
+    const localId = "pending" in t ? t.localId : undefined;
     if (t.type === "expense" && t.category) {
       setEditingExpense({
         id: t.id,
@@ -28,11 +33,20 @@ export function Dashboard() {
         label: t.label,
         categoryId: t.category.id,
         subcategoryId: t.subcategory?.id ?? null,
+        localId,
       });
     } else if (t.type === "income") {
-      setEditingIncome({ id: t.id, label: t.label ?? "", amount: t.amount, date: t.date });
+      setEditingIncome({
+        id: t.id,
+        label: t.label ?? "",
+        amount: t.amount,
+        date: t.date,
+        localId,
+      });
     }
   }
+
+  const transactions = [...pendingTransactions, ...(dashboard?.transactionsRecentes ?? [])];
 
   return (
     <div>
@@ -74,11 +88,14 @@ export function Dashboard() {
             </Link>
           </div>
           <p className="mb-2 text-xs text-slate-500">
-            Touchez une transaction pour la modifier ou la supprimer.
+            {online
+              ? "Touchez une transaction pour la modifier ou la supprimer."
+              : "Hors ligne : seules les transactions en attente peuvent être modifiées."}
           </p>
           <TransactionsList
-            transactions={dashboard.transactionsRecentes}
+            transactions={transactions}
             onSelectTransaction={handleSelectTransaction}
+            interactiveOnlyPending={!online}
           />
         </>
       )}

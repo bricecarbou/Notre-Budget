@@ -1,11 +1,12 @@
 import { create } from "zustand";
+import type { QueuedItem } from "@/lib/offlineQueue";
 
 interface OfflineQueueState {
-  count: number;
-  setCount: (count: number) => void;
+  items: QueuedItem[];
+  setItems: (items: QueuedItem[]) => void;
 }
 
 export const useOfflineQueueStore = create<OfflineQueueState>((set) => ({
-  count: 0,
-  setCount: (count) => set({ count }),
+  items: [],
+  setItems: (items) => set({ items }),
 }));

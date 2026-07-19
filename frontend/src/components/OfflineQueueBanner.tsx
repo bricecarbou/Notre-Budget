@@ -2,7 +2,7 @@ import { CloudOff } from "lucide-react";
 import { useOfflineQueueStore } from "@/store/offlineQueueStore";
 
 export function OfflineQueueBanner() {
-  const count = useOfflineQueueStore((s) => s.count);
+  const count = useOfflineQueueStore((s) => s.items.length);
   if (count === 0) return null;
 
   return (

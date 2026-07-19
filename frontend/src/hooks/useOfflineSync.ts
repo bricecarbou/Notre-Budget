@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import { flushOfflineQueue, initOfflineQueueCount } from "@/lib/offlineQueue";
+import { flushOfflineQueue, initOfflineQueue } from "@/lib/offlineQueue";
 
 const RETRY_INTERVAL_MS = 20_000;
 
@@ -11,7 +11,7 @@ export function useOfflineSync() {
   const queryClient = useQueryClient();
 
   useEffect(() => {
-    initOfflineQueueCount();
+    initOfflineQueue();
 
     async function attemptFlush() {
       const { synced } = await flushOfflineQueue();

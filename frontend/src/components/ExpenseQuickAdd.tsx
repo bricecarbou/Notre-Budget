@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Trash2, X } from "lucide-react";
 import { useCategories } from "@/hooks/useCategories";
 import { useCreateExpense, useUpdateExpense, useDeleteExpense } from "@/hooks/useCreateExpense";
+import { updateQueuedExpense, removeQueuedItem } from "@/lib/offlineQueue";
 import { CategoryGrid } from "./CategoryGrid";
 import type { Category, Subcategory } from "@/types";
 
@@ -12,6 +13,9 @@ export interface EditableExpense {
   label: string | null;
   categoryId: string;
   subcategoryId: string | null;
+  // Présent uniquement pour une dépense pas encore synchronisée : édition/
+  // suppression purement locale (file d'attente), aucun appel réseau.
+  localId?: string;
 }
 
 function todayISO() {
@@ -58,6 +62,11 @@ export function ExpenseQuickAdd({
       date,
       label: label || undefined,
     };
+    if (expense?.localId) {
+      updateQueuedExpense(expense.localId, input);
+      onClose();
+      return;
+    }
     if (isEdit) {
       await updateExpense.mutateAsync({ id: expense.id, ...input });
     } else {
@@ -69,6 +78,11 @@ export function ExpenseQuickAdd({
   async function handleDelete() {
     if (!expense) return;
     if (!window.confirm("Supprimer cette dépense ?")) return;
+    if (expense.localId) {
+      removeQueuedItem(expense.localId);
+      onClose();
+      return;
+    }
     await deleteExpense.mutateAsync(expense.id);
     onClose();
   }

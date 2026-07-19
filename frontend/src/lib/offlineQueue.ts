@@ -5,21 +5,21 @@ import type { CreateIncomeInput } from "@/hooks/useIncomes";
 
 const QUEUE_KEY = "notre-budget-offline-queue";
 
-interface QueuedExpense {
+export interface QueuedExpense {
   localId: string;
   type: "expense";
   payload: CreateExpenseInput;
   createdAt: string;
 }
 
-interface QueuedIncome {
+export interface QueuedIncome {
   localId: string;
   type: "income";
   payload: CreateIncomeInput;
   createdAt: string;
 }
 
-type QueuedItem = QueuedExpense | QueuedIncome;
+export type QueuedItem = QueuedExpense | QueuedIncome;
 
 function readQueue(): QueuedItem[] {
   try {
@@ -31,13 +31,13 @@ function readQueue(): QueuedItem[] {
 
 function writeQueue(items: QueuedItem[]) {
   localStorage.setItem(QUEUE_KEY, JSON.stringify(items));
-  useOfflineQueueStore.getState().setCount(items.length);
+  useOfflineQueueStore.getState().setItems(items);
 }
 
-// À appeler une fois au démarrage pour que le compteur reflète ce qui a été
-// mis en file lors d'une session précédente (avant le prochain rechargement).
-export function initOfflineQueueCount() {
-  useOfflineQueueStore.getState().setCount(readQueue().length);
+// À appeler une fois au démarrage pour que l'état reflète ce qui a été mis
+// en file lors d'une session précédente (avant le prochain rechargement).
+export function initOfflineQueue() {
+  useOfflineQueueStore.getState().setItems(readQueue());
 }
 
 export function queueOfflineExpense(payload: CreateExpenseInput) {
@@ -62,8 +62,24 @@ export function queueOfflineIncome(payload: CreateIncomeInput) {
   writeQueue(items);
 }
 
-export function getQueueCount() {
-  return readQueue().length;
+// Édition/suppression d'un item pas encore synchronisé : purement local,
+// aucun appel réseau, donc toujours possible hors ligne.
+export function updateQueuedExpense(localId: string, payload: CreateExpenseInput) {
+  const items = readQueue().map((item) =>
+    item.localId === localId && item.type === "expense" ? { ...item, payload } : item
+  );
+  writeQueue(items);
+}
+
+export function updateQueuedIncome(localId: string, payload: CreateIncomeInput) {
+  const items = readQueue().map((item) =>
+    item.localId === localId && item.type === "income" ? { ...item, payload } : item
+  );
+  writeQueue(items);
+}
+
+export function removeQueuedItem(localId: string) {
+  writeQueue(readQueue().filter((item) => item.localId !== localId));
 }
 
 // Rejoue la file dans l'ordre. Un échec réseau garde l'item pour la

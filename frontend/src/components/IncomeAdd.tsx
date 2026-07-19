@@ -2,12 +2,16 @@ import { useState } from "react";
 import { Trash2, X } from "lucide-react";
 import { useCreateIncome, useUpdateIncome, useDeleteIncome } from "@/hooks/useIncomes";
 import { useCreateIncomeTemplate } from "@/hooks/useIncomeTemplates";
+import { updateQueuedIncome, removeQueuedItem } from "@/lib/offlineQueue";
 
 export interface EditableIncome {
   id: string;
   label: string;
   amount: number;
   date: string;
+  // Présent uniquement pour un revenu pas encore synchronisé : édition/
+  // suppression purement locale (file d'attente), aucun appel réseau.
+  localId?: string;
 }
 
 function todayISO() {
@@ -46,6 +50,11 @@ export function IncomeAdd({
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!canSave) return;
+    if (income?.localId) {
+      updateQueuedIncome(income.localId, { label, amount: Number(amount), date });
+      onClose();
+      return;
+    }
     try {
       if (isEdit) {
         await updateIncome.mutateAsync({ id: income.id, label, amount: Number(amount), date });
@@ -69,6 +78,11 @@ export function IncomeAdd({
   async function handleDelete() {
     if (!income) return;
     if (!window.confirm("Supprimer ce revenu ?")) return;
+    if (income.localId) {
+      removeQueuedItem(income.localId);
+      onClose();
+      return;
+    }
     await deleteIncome.mutateAsync(income.id);
     onClose();
   }

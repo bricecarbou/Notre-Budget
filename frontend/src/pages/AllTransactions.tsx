@@ -3,6 +3,8 @@ import { Search } from "lucide-react";
 import { useMonthStore } from "@/store/monthStore";
 import { useTransactions } from "@/hooks/useTransactions";
 import { usePaginatedFilter } from "@/hooks/usePaginatedFilter";
+import { useOnlineStatus } from "@/hooks/useOnlineStatus";
+import { usePendingTransactions, type PendingTransaction } from "@/hooks/usePendingTransactions";
 import { MonthSelector } from "@/components/MonthSelector";
 import { TransactionsList } from "@/components/TransactionsList";
 import { PaginationControls } from "@/components/PaginationControls";
@@ -27,7 +29,13 @@ export function AllTransactions() {
   const [editingExpense, setEditingExpense] = useState<EditableExpense | null>(null);
   const [editingIncome, setEditingIncome] = useState<EditableIncome | null>(null);
 
-  const { data: transactions = [], isLoading } = useTransactions(year, month, months);
+  const { data: fetchedTransactions = [], isLoading } = useTransactions(year, month, months);
+  const online = useOnlineStatus();
+  const pendingTransactions = usePendingTransactions();
+  const transactions = useMemo(
+    () => [...pendingTransactions, ...fetchedTransactions],
+    [pendingTransactions, fetchedTransactions]
+  );
 
   const categoryOptions = useMemo(() => {
     const seen = new Map<string, string>();
@@ -51,7 +59,8 @@ export function AllTransactions() {
       searchFields: (t) => [t.label ?? "", t.category?.name ?? ""],
     });
 
-  function handleSelectTransaction(t: Transaction) {
+  function handleSelectTransaction(t: Transaction | PendingTransaction) {
+    const localId = "pending" in t ? t.localId : undefined;
     if (t.type === "expense" && t.category) {
       setEditingExpense({
         id: t.id,
@@ -60,9 +69,16 @@ export function AllTransactions() {
         label: t.label,
         categoryId: t.category.id,
         subcategoryId: t.subcategory?.id ?? null,
+        localId,
       });
     } else if (t.type === "income") {
-      setEditingIncome({ id: t.id, label: t.label ?? "", amount: t.amount, date: t.date });
+      setEditingIncome({
+        id: t.id,
+        label: t.label ?? "",
+        amount: t.amount,
+        date: t.date,
+        localId,
+      });
     }
   }
 
@@ -139,7 +155,11 @@ export function AllTransactions() {
         </p>
       )}
 
-      <TransactionsList transactions={paginated} onSelectTransaction={handleSelectTransaction} />
+      <TransactionsList
+        transactions={paginated}
+        onSelectTransaction={handleSelectTransaction}
+        interactiveOnlyPending={!online}
+      />
 
       <PaginationControls
         page={page}
