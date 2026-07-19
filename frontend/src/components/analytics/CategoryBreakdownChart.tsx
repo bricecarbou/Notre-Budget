@@ -47,7 +47,13 @@ function CustomTooltip({ active, payload }: any) {
   );
 }
 
-export function CategoryBreakdownChart({ breakdown }: { breakdown: CategoryBreakdown[] }) {
+export function CategoryBreakdownChart({
+  breakdown,
+  onSelectCategory,
+}: {
+  breakdown: CategoryBreakdown[];
+  onSelectCategory?: (category: CategoryBreakdown) => void;
+}) {
   const tokens = useChartTokens();
 
   if (breakdown.length === 0) {
@@ -73,6 +79,11 @@ export function CategoryBreakdownChart({ breakdown }: { breakdown: CategoryBreak
             paddingAngle={2}
             stroke={tokens.surface}
             strokeWidth={2}
+            onClick={(slice) => {
+              if (slice.categoryId === "__autres__") return;
+              onSelectCategory?.(slice as CategoryBreakdown);
+            }}
+            className={onSelectCategory ? "cursor-pointer" : undefined}
           >
             {slices.map((slice) => (
               <Cell key={slice.categoryId} fill={slice.color ?? FALLBACK_CATEGORY_COLOR} />

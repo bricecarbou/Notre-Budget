@@ -27,6 +27,12 @@ enum Role {
   USER
 }
 
+// Réglages partagés du budget. Ligne unique (id fixe "singleton").
+model AppSettings {
+  id            String @id @default("singleton")
+  monthStartDay Int    @default(1)
+}
+
 model Category {
   id        String  @id @default(cuid())
   name      String  @unique

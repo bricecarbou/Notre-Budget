@@ -1,9 +1,11 @@
 import { prisma } from "../lib/prisma";
 import { monthRange } from "../utils/dateRange";
+import { getMonthStartDay } from "./settings.service";
 
 // Logique métier centralisée (voir spec section 4) — ne jamais dupliquer côté frontend.
 export async function getDashboard(year: number, month: number) {
-  const { start, end } = monthRange(year, month);
+  const startDay = await getMonthStartDay();
+  const { start, end } = monthRange(year, month, startDay);
 
   const activeTemplateFilter = {
     active: true,

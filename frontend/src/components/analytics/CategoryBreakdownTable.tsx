@@ -5,14 +5,24 @@ function formatEuros(amount: number) {
   return amount.toLocaleString("fr-FR", { style: "currency", currency: "EUR" });
 }
 
-export function CategoryBreakdownTable({ breakdown }: { breakdown: CategoryBreakdown[] }) {
+export function CategoryBreakdownTable({
+  breakdown,
+  onSelectCategory,
+}: {
+  breakdown: CategoryBreakdown[];
+  onSelectCategory?: (category: CategoryBreakdown) => void;
+}) {
   if (breakdown.length === 0) return null;
 
   return (
     <table className="mt-4 w-full text-sm">
       <tbody className="divide-y divide-slate-200 dark:divide-slate-800">
         {breakdown.map((c) => (
-          <tr key={c.categoryId}>
+          <tr
+            key={c.categoryId}
+            onClick={() => onSelectCategory?.(c)}
+            className={onSelectCategory ? "cursor-pointer" : undefined}
+          >
             <td className="py-2 pr-2">
               <span className="flex items-center gap-2">
                 <CategoryIcon icon={c.icon} color={c.color} size={14} />

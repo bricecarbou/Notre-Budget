@@ -114,3 +114,33 @@ export interface CategoryBreakdown {
   amount: number;
   percentage: number;
 }
+
+export interface AppSettings {
+  id: string;
+  monthStartDay: number;
+}
+
+export interface CategoryExpenseTransaction {
+  id: string;
+  label: string | null;
+  amount: number;
+  date: string;
+  subcategoryId: string | null;
+  subcategoryName: string | null;
+  createdBy: UserSummary;
+}
+
+export interface CategoryRecurringOccurrence {
+  templateId: string;
+  label: string;
+  amount: number;
+  year: number;
+  month: number;
+  dayOfMonth: number;
+  subcategoryName: string | null;
+}
+
+export interface CategoryTransactions {
+  expenses: CategoryExpenseTransaction[];
+  recurringOccurrences: CategoryRecurringOccurrence[];
+}

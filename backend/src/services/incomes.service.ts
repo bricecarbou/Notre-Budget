@@ -1,5 +1,6 @@
 import { prisma } from "../lib/prisma";
 import { monthRange } from "../utils/dateRange";
+import { getMonthStartDay } from "./settings.service";
 
 export class IncomeError extends Error {
   constructor(message: string, public status = 400) {
@@ -7,8 +8,9 @@ export class IncomeError extends Error {
   }
 }
 
-export function listIncomes(year: number, month: number) {
-  const { start, end } = monthRange(year, month);
+export async function listIncomes(year: number, month: number) {
+  const startDay = await getMonthStartDay();
+  const { start, end } = monthRange(year, month, startDay);
   return prisma.income.findMany({
     where: { date: { gte: start, lte: end } },
     include: { createdBy: { select: { id: true, name: true } } },

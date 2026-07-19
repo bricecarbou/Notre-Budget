@@ -12,6 +12,7 @@ import expenseRoutes from "./routes/expenses.routes";
 import expenseTemplateRoutes from "./routes/expenseTemplates.routes";
 import dashboardRoutes from "./routes/dashboard.routes";
 import analyticsRoutes from "./routes/analytics.routes";
+import settingsRoutes from "./routes/settings.routes";
 
 export function createApp() {
   const app = express();
@@ -29,6 +30,7 @@ export function createApp() {
   app.use("/api/expense-templates", expenseTemplateRoutes);
   app.use("/api/dashboard", dashboardRoutes);
   app.use("/api/analytics", analyticsRoutes);
+  app.use("/api/settings", settingsRoutes);
 
   if (process.env.NODE_ENV === "production") {
     const frontendDist = path.resolve(__dirname, "../../frontend/dist");

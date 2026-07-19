@@ -5,6 +5,8 @@ import { MonthSelector } from "@/components/MonthSelector";
 import { ExpensesTrendChart } from "@/components/analytics/ExpensesTrendChart";
 import { CategoryBreakdownChart } from "@/components/analytics/CategoryBreakdownChart";
 import { CategoryBreakdownTable } from "@/components/analytics/CategoryBreakdownTable";
+import { CategoryTransactionsModal } from "@/components/analytics/CategoryTransactionsModal";
+import type { CategoryBreakdown } from "@/types";
 
 const RANGES = [
   { label: "Mois", months: 1 },
@@ -16,6 +18,7 @@ const RANGES = [
 export function Analytics() {
   const [months, setMonths] = useState<(typeof RANGES)[number]["months"]>(1);
   const { year, month } = useMonthStore();
+  const [selectedCategory, setSelectedCategory] = useState<CategoryBreakdown | null>(null);
 
   const { data: breakdown = [], isLoading: breakdownLoading } = useByCategory(year, month, months);
   const { data: trend, isLoading: trendLoading } = useMonthlyTrend(months, year, month);
@@ -45,12 +48,13 @@ export function Analytics() {
           Répartition par catégorie
           {months > 1 && <span> · {RANGES.find((r) => r.months === months)?.label}</span>}
         </h2>
+        <p className="mb-2 text-xs text-slate-500">Touchez une catégorie pour voir le détail.</p>
 
         {breakdownLoading && <p className="py-8 text-center text-sm text-slate-500">Chargement...</p>}
         {!breakdownLoading && (
           <>
-            <CategoryBreakdownChart breakdown={breakdown} />
-            <CategoryBreakdownTable breakdown={breakdown} />
+            <CategoryBreakdownChart breakdown={breakdown} onSelectCategory={setSelectedCategory} />
+            <CategoryBreakdownTable breakdown={breakdown} onSelectCategory={setSelectedCategory} />
           </>
         )}
       </section>
@@ -63,6 +67,16 @@ export function Analytics() {
           {trendLoading && <p className="py-8 text-center text-sm text-slate-500">Chargement...</p>}
           {trend && <ExpensesTrendChart data={trend} />}
         </section>
+      )}
+
+      {selectedCategory && (
+        <CategoryTransactionsModal
+          category={selectedCategory}
+          year={year}
+          month={month}
+          months={months}
+          onClose={() => setSelectedCategory(null)}
+        />
       )}
     </div>
   );

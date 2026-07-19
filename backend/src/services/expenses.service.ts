@@ -1,5 +1,6 @@
 import { prisma } from "../lib/prisma";
 import { monthRange } from "../utils/dateRange";
+import { getMonthStartDay } from "./settings.service";
 
 export class ExpenseError extends Error {
   constructor(message: string, public status = 400) {
@@ -7,8 +8,9 @@ export class ExpenseError extends Error {
   }
 }
 
-export function listExpenses(year: number, month: number) {
-  const { start, end } = monthRange(year, month);
+export async function listExpenses(year: number, month: number) {
+  const startDay = await getMonthStartDay();
+  const { start, end } = monthRange(year, month, startDay);
   return prisma.expense.findMany({
     where: { date: { gte: start, lte: end } },
     include: {
