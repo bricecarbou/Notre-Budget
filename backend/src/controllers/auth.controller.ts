@@ -1,5 +1,9 @@
 import type { Request, Response } from "express";
-import { loginSchema, refreshSchema } from "../validators/auth.validators";
+import {
+  loginSchema,
+  refreshSchema,
+  changePasswordSchema,
+} from "../validators/auth.validators";
 import * as authService from "../services/auth.service";
 
 export async function loginHandler(req: Request, res: Response) {
@@ -42,4 +46,25 @@ export async function refreshHandler(req: Request, res: Response) {
 export async function logoutHandler(_req: Request, res: Response) {
   // Stateless JWT : le client supprime ses tokens localement.
   return res.status(204).send();
+}
+
+export async function changePasswordHandler(req: Request, res: Response) {
+  const parsed = changePasswordSchema.safeParse(req.body);
+  if (!parsed.success) {
+    return res.status(400).json({ error: parsed.error.flatten() });
+  }
+
+  try {
+    await authService.changePassword(
+      req.user!.id,
+      parsed.data.currentPassword,
+      parsed.data.newPassword
+    );
+    return res.status(204).send();
+  } catch (err) {
+    if (err instanceof authService.AuthError) {
+      return res.status(401).json({ error: err.message });
+    }
+    throw err;
+  }
 }

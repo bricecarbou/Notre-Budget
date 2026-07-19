@@ -117,7 +117,11 @@ function CategoryRow({ category }: { category: Category }) {
             <div key={sub.id} className="flex items-center justify-between text-sm">
               <span className="text-slate-700 dark:text-slate-300">{sub.name}</span>
               <button
-                onClick={() => deleteSubcategory.mutate(sub.id)}
+                onClick={() => {
+                  if (window.confirm(`Supprimer la sous-catégorie "${sub.name}" ?`)) {
+                    deleteSubcategory.mutate(sub.id);
+                  }
+                }}
                 className="text-slate-500 hover:text-red-500 dark:hover:text-red-400"
                 aria-label="Supprimer la sous-catégorie"
               >

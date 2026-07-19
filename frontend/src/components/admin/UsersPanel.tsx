@@ -50,11 +50,15 @@ export function UsersPanel() {
                 <Pencil size={16} />
               </button>
               <button
-                onClick={() =>
-                  u.active
-                    ? deactivateUser.mutate(u.id)
-                    : updateUser.mutate({ id: u.id, active: true })
-                }
+                onClick={() => {
+                  if (u.active) {
+                    if (window.confirm(`Désactiver le compte de ${u.name} ?`)) {
+                      deactivateUser.mutate(u.id);
+                    }
+                  } else {
+                    updateUser.mutate({ id: u.id, active: true });
+                  }
+                }}
                 className="rounded-full p-2 text-slate-500 hover:bg-slate-200 dark:text-slate-400 dark:hover:bg-slate-800"
                 aria-label={u.active ? "Désactiver" : "Réactiver"}
               >

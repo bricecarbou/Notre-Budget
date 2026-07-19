@@ -144,7 +144,9 @@ export function IncomeTemplatesList() {
                     <Pencil size={16} />
                   </button>
                   <button
-                    onClick={() => deleteTemplate.mutate(t.id)}
+                    onClick={() => {
+                      if (window.confirm(`Supprimer "${t.label}" ?`)) deleteTemplate.mutate(t.id);
+                    }}
                     className="rounded-full p-2 text-slate-500 hover:bg-slate-200 dark:text-slate-400 dark:hover:bg-slate-800"
                     aria-label="Supprimer"
                   >

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { X } from "lucide-react";
 import { useCreateCategory, useUpdateCategory } from "@/hooks/useCategories";
+import { IconPicker } from "./IconPicker";
 import type { Category } from "@/types";
 
 export function CategoryFormModal({
@@ -66,13 +67,8 @@ export function CategoryFormModal({
             className="rounded-xl bg-slate-100 p-3 text-base outline-none disabled:opacity-50 dark:bg-slate-900"
             required
           />
-          <input
-            type="text"
-            placeholder="Icône (nom lucide-react, ex: ShoppingCart)"
-            value={icon}
-            onChange={(e) => setIcon(e.target.value)}
-            className="rounded-xl bg-slate-100 p-3 text-base outline-none dark:bg-slate-900"
-          />
+          <label className="-mb-1 text-sm text-slate-500 dark:text-slate-400">Icône</label>
+          <IconPicker value={icon} onChange={setIcon} />
           <div className="flex items-center gap-3">
             <label className="text-sm text-slate-500 dark:text-slate-400">Couleur</label>
             <input

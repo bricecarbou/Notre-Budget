@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { Plus } from "lucide-react";
 import { useMonthStore } from "@/store/monthStore";
 import { useDashboard } from "@/hooks/useDashboard";
@@ -55,9 +56,14 @@ export function Dashboard() {
             </button>
           )}
 
-          <h2 className="mb-2 mt-6 text-sm font-medium text-slate-500 dark:text-slate-400">
-            Dernières transactions
-          </h2>
+          <div className="mb-2 mt-6 flex items-center justify-between">
+            <h2 className="text-sm font-medium text-slate-500 dark:text-slate-400">
+              Dernières transactions
+            </h2>
+            <Link to="/transactions" className="text-xs font-medium text-blue-600 dark:text-blue-400">
+              Voir tout
+            </Link>
+          </div>
           <p className="mb-2 text-xs text-slate-500">
             Touchez une transaction pour la modifier ou la supprimer.
           </p>

@@ -1,12 +1,7 @@
 import { prisma } from "../lib/prisma";
-import { monthRange } from "../utils/dateRange";
+import { monthRange, shiftMonth } from "../utils/dateRange";
 import { getDashboard } from "./dashboard.service";
 import { getMonthStartDay } from "./settings.service";
-
-function shiftMonth(year: number, month: number, offset: number) {
-  const d = new Date(Date.UTC(year, month - 1 + offset, 1));
-  return { year: d.getUTCFullYear(), month: d.getUTCMonth() + 1 };
-}
 
 export async function getMonthlyTrend(months: number, endYear?: number, endMonth?: number) {
   const now = new Date();

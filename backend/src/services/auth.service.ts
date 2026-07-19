@@ -1,5 +1,5 @@
 import { prisma } from "../lib/prisma";
-import { verifyPassword } from "../utils/password";
+import { verifyPassword, hashPassword } from "../utils/password";
 import {
   signAccessToken,
   signRefreshToken,
@@ -58,4 +58,19 @@ export async function refresh(refreshToken: string) {
   });
 
   return { accessToken };
+}
+
+export async function changePassword(
+  userId: string,
+  currentPassword: string,
+  newPassword: string
+) {
+  const user = await prisma.user.findUnique({ where: { id: userId } });
+  if (!user) throw new AuthError("Utilisateur introuvable");
+
+  const valid = await verifyPassword(currentPassword, user.passwordHash);
+  if (!valid) throw new AuthError("Mot de passe actuel incorrect");
+
+  const passwordHash = await hashPassword(newPassword);
+  await prisma.user.update({ where: { id: userId }, data: { passwordHash } });
 }

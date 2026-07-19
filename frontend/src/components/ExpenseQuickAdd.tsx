@@ -68,6 +68,7 @@ export function ExpenseQuickAdd({
 
   async function handleDelete() {
     if (!expense) return;
+    if (!window.confirm("Supprimer cette dépense ?")) return;
     await deleteExpense.mutateAsync(expense.id);
     onClose();
   }

@@ -19,3 +19,11 @@ export function useLogin() {
     },
   });
 }
+
+export function useChangePassword() {
+  return useMutation({
+    mutationFn: async (input: { currentPassword: string; newPassword: string }) => {
+      await apiClient.patch("/auth/password", input);
+    },
+  });
+}

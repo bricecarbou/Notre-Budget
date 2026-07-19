@@ -6,3 +6,8 @@ export function monthRange(year: number, month: number, startDay = 1) {
   const end = new Date(Date.UTC(year, month, startDay, 0, 0, 0) - 1);
   return { start, end };
 }
+
+export function shiftMonth(year: number, month: number, offset: number) {
+  const d = new Date(Date.UTC(year, month - 1 + offset, 1));
+  return { year: d.getUTCFullYear(), month: d.getUTCMonth() + 1 };
+}

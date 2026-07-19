@@ -68,6 +68,7 @@ export function IncomeAdd({
 
   async function handleDelete() {
     if (!income) return;
+    if (!window.confirm("Supprimer ce revenu ?")) return;
     await deleteIncome.mutateAsync(income.id);
     onClose();
   }

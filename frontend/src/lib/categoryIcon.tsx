@@ -1,12 +1,37 @@
-import * as LucideIcons from "lucide-react";
-import { Tag, type LucideIcon } from "lucide-react";
+import {
+  ShoppingCart, Home, Car, Bus, Fuel, Plane,
+  Shield, CreditCard, Landmark, Wallet, PiggyBank, Receipt,
+  Repeat, Wifi, Phone, Tv, Smartphone, Laptop,
+  Music, Ticket, Gamepad2, Film, Camera, PartyPopper,
+  HeartPulse, Stethoscope, Pill, Dumbbell,
+  Utensils, Coffee, Pizza,
+  Shirt, Scissors, Wrench, Zap, Droplet, Flame,
+  Gift, Baby, Dog, GraduationCap, Briefcase, Palmtree,
+  Tag, MoreHorizontal,
+  type LucideIcon,
+} from "lucide-react";
+
+// Import nommé (pas `import *`) pour que le bundle ne charge que ces icônes
+// au lieu de l'intégralité de lucide-react (~1000 icônes autrement).
+const ICON_MAP: Record<string, LucideIcon> = {
+  ShoppingCart, Home, Car, Bus, Fuel, Plane,
+  Shield, CreditCard, Landmark, Wallet, PiggyBank, Receipt,
+  Repeat, Wifi, Phone, Tv, Smartphone, Laptop,
+  Music, Ticket, Gamepad2, Film, Camera, PartyPopper,
+  HeartPulse, Stethoscope, Pill, Dumbbell,
+  Utensils, Coffee, Pizza,
+  Shirt, Scissors, Wrench, Zap, Droplet, Flame,
+  Gift, Baby, Dog, GraduationCap, Briefcase, Palmtree,
+  Tag, MoreHorizontal,
+};
+
+export const ICON_OPTIONS = Object.keys(ICON_MAP);
 
 export const FALLBACK_CATEGORY_COLOR = "#64748b";
 
 export function resolveIcon(name: string | null | undefined): LucideIcon {
   if (!name) return Tag;
-  const icons = LucideIcons as unknown as Record<string, LucideIcon>;
-  return icons[name] ?? Tag;
+  return ICON_MAP[name] ?? Tag;
 }
 
 export function withAlpha(hex: string, alpha: number) {
