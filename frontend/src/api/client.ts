@@ -3,6 +3,12 @@ import { useAuthStore } from "@/store/authStore";
 
 export const apiClient = axios.create({ baseURL: "/api" });
 
+// Échec réseau (pas de réponse du tout) vs erreur applicative (4xx/5xx avec
+// réponse) — seul le premier cas justifie une mise en file hors ligne.
+export function isNetworkError(err: unknown): boolean {
+  return axios.isAxiosError(err) && !err.response;
+}
+
 apiClient.interceptors.request.use((config) => {
   const { accessToken } = useAuthStore.getState();
   if (accessToken) {

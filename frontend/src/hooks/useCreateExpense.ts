@@ -1,5 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { apiClient } from "@/api/client";
+import { apiClient, isNetworkError } from "@/api/client";
+import { queueOfflineExpense } from "@/lib/offlineQueue";
 
 export interface CreateExpenseInput {
   amount: number;
@@ -19,8 +20,19 @@ export function useCreateExpense() {
 
   return useMutation({
     mutationFn: async (input: CreateExpenseInput) => {
-      const { data } = await apiClient.post("/expenses", input);
-      return data;
+      try {
+        const { data } = await apiClient.post("/expenses", input);
+        return data;
+      } catch (err) {
+        // Pas de réseau : on ne bloque pas la saisie, c'est une simple
+        // création qui n'entre en conflit avec rien — elle sera rejouée
+        // au retour de la connexion.
+        if (isNetworkError(err)) {
+          queueOfflineExpense(input);
+          return { queued: true };
+        }
+        throw err;
+      }
     },
     onSuccess: () => invalidate(queryClient),
   });

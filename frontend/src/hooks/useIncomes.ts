@@ -1,5 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { apiClient } from "@/api/client";
+import { apiClient, isNetworkError } from "@/api/client";
+import { queueOfflineIncome } from "@/lib/offlineQueue";
 
 export interface CreateIncomeInput {
   label: string;
@@ -16,8 +17,16 @@ export function useCreateIncome() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (input: CreateIncomeInput) => {
-      const { data } = await apiClient.post("/incomes", input);
-      return data;
+      try {
+        const { data } = await apiClient.post("/incomes", input);
+        return data;
+      } catch (err) {
+        if (isNetworkError(err)) {
+          queueOfflineIncome(input);
+          return { queued: true };
+        }
+        throw err;
+      }
     },
     onSuccess: () => invalidate(queryClient),
   });
