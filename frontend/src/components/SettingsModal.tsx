@@ -2,19 +2,12 @@ import { useEffect, useState } from "react";
 import { X } from "lucide-react";
 import { useSettings, useUpdateSettings } from "@/hooks/useSettings";
 import { useChangePassword } from "@/hooks/useAuth";
-
-function dayToDateString(day: number) {
-  const now = new Date();
-  const year = now.getFullYear();
-  const month = String(now.getMonth() + 1).padStart(2, "0");
-  const dd = String(day).padStart(2, "0");
-  return `${year}-${month}-${dd}`;
-}
+import { useMonthStore } from "@/store/monthStore";
 
 export function SettingsModal({ onClose }: { onClose: () => void }) {
   const { data: settings } = useSettings();
   const updateSettings = useUpdateSettings();
-  const [date, setDate] = useState(() => dayToDateString(1));
+  const [day, setDay] = useState("1");
 
   const changePassword = useChangePassword();
   const [currentPassword, setCurrentPassword] = useState("");
@@ -22,13 +15,14 @@ export function SettingsModal({ onClose }: { onClose: () => void }) {
   const [passwordSaved, setPasswordSaved] = useState(false);
 
   useEffect(() => {
-    if (settings) setDate(dayToDateString(settings.monthStartDay));
+    if (settings) setDay(String(settings.monthStartDay));
   }, [settings]);
 
   async function handleSaveMonthStart() {
-    const day = Number(date.split("-")[2]);
-    if (!day || day < 1 || day > 31) return;
-    await updateSettings.mutateAsync(day);
+    const value = Number(day);
+    if (!value || value < 1 || value > 31) return;
+    await updateSettings.mutateAsync(value);
+    useMonthStore.getState().goToCurrentMonth(value);
     onClose();
   }
 
@@ -57,17 +51,21 @@ export function SettingsModal({ onClose }: { onClose: () => void }) {
         </div>
 
         <label className="mb-1 block text-sm text-slate-500 dark:text-slate-400">
-          Début du mois budgétaire
+          Jour de début du mois budgétaire
         </label>
         <input
-          type="date"
-          value={date}
-          onChange={(e) => setDate(e.target.value)}
+          type="number"
+          inputMode="numeric"
+          min={1}
+          max={31}
+          value={day}
+          onChange={(e) => setDay(e.target.value)}
           className="w-full rounded-xl bg-slate-100 p-3 text-base outline-none dark:bg-slate-900"
         />
         <p className="mt-2 text-xs text-slate-500">
-          Seul le jour compte (ex: 27) — le mois budgétaire ira du 27 au 26 du
-          mois suivant, pour tout le monde, jusqu'à ce que tu recalibres ici.
+          Juste un jour du mois (ex: 27), pas une date précise — chaque mois
+          budgétaire ira de ce jour-là au jour précédent le mois suivant (ex:
+          27 → 26), pour tout le monde, jusqu'à ce que tu recalibres ici.
         </p>
 
         <button

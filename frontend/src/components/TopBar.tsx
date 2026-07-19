@@ -1,8 +1,9 @@
 import { useState } from "react";
-import { LogOut, Moon, Settings, Sun } from "lucide-react";
+import { LogOut, Moon, Settings, Sun, WifiOff } from "lucide-react";
 import { apiClient } from "@/api/client";
 import { useAuthStore } from "@/store/authStore";
 import { useThemeStore } from "@/store/themeStore";
+import { useOnlineStatus } from "@/hooks/useOnlineStatus";
 import { SettingsModal } from "./SettingsModal";
 
 export function TopBar() {
@@ -10,6 +11,7 @@ export function TopBar() {
   const logout = useAuthStore((s) => s.logout);
   const theme = useThemeStore((s) => s.theme);
   const toggleTheme = useThemeStore((s) => s.toggleTheme);
+  const online = useOnlineStatus();
   const [showSettings, setShowSettings] = useState(false);
 
   async function handleLogout() {
@@ -24,8 +26,17 @@ export function TopBar() {
   return (
     <header className="flex items-center justify-between border-b border-slate-200 bg-white px-4 pb-3 pt-[calc(0.75rem+env(safe-area-inset-top))] dark:border-slate-800 dark:bg-slate-950">
       <div>
-        <div className="text-sm font-semibold text-slate-900 dark:text-slate-100">
-          Notre Budget
+        <div className="flex items-center gap-1.5">
+          <span className="text-sm font-semibold text-slate-900 dark:text-slate-100">
+            Notre Budget
+          </span>
+          {!online && (
+            <WifiOff
+              size={14}
+              className="text-orange-500"
+              aria-label="Hors ligne"
+            />
+          )}
         </div>
         {user && <div className="text-xs text-slate-500">{user.name}</div>}
       </div>
