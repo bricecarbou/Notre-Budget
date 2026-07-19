@@ -1,13 +1,23 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { apiClient } from "@/api/client";
+import { apiClient, isNetworkError } from "@/api/client";
+import { saveCategoriesCache, loadCategoriesCache } from "@/lib/categoryCache";
 import type { Category, Subcategory } from "@/types";
 
 export function useCategories() {
   return useQuery({
     queryKey: ["categories"],
     queryFn: async () => {
-      const { data } = await apiClient.get<Category[]>("/categories");
-      return data;
+      try {
+        const { data } = await apiClient.get<Category[]>("/categories");
+        saveCategoriesCache(data);
+        return data;
+      } catch (err) {
+        if (isNetworkError(err)) {
+          const cached = loadCategoriesCache();
+          if (cached) return cached;
+        }
+        throw err;
+      }
     },
   });
 }

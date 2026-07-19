@@ -1,5 +1,7 @@
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useMonthStore } from "@/store/monthStore";
+import { useSettings } from "@/hooks/useSettings";
+import { getDisplayPeriod } from "@/lib/periodLabel";
 
 const MONTH_LABELS = [
   "Janvier", "Février", "Mars", "Avril", "Mai", "Juin",
@@ -8,6 +10,8 @@ const MONTH_LABELS = [
 
 export function MonthSelector() {
   const { year, month, goToPreviousMonth, goToNextMonth } = useMonthStore();
+  const { data: settings } = useSettings();
+  const display = getDisplayPeriod(year, month, settings?.monthStartDay ?? 1);
 
   return (
     <div className="flex items-center justify-center gap-4 py-2">
@@ -19,7 +23,7 @@ export function MonthSelector() {
         <ChevronLeft size={20} />
       </button>
       <span className="min-w-[10rem] text-center font-medium">
-        {MONTH_LABELS[month - 1]} {year}
+        {MONTH_LABELS[display.month - 1]} {display.year}
       </span>
       <button
         onClick={goToNextMonth}

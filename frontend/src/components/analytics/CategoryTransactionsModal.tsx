@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { X } from "lucide-react";
 import { useCategoryTransactions } from "@/hooks/useAnalytics";
+import { useSettings } from "@/hooks/useSettings";
 import { CategoryIcon } from "@/lib/categoryIcon";
+import { getDisplayPeriod } from "@/lib/periodLabel";
 import { ExpenseQuickAdd, type EditableExpense } from "@/components/ExpenseQuickAdd";
 import type { CategoryBreakdown } from "@/types";
 
@@ -28,6 +30,8 @@ export function CategoryTransactionsModal({
   onClose: () => void;
 }) {
   const { data, isLoading } = useCategoryTransactions(category.categoryId, year, month, months);
+  const { data: settings } = useSettings();
+  const startDay = settings?.monthStartDay ?? 1;
   const [editingExpense, setEditingExpense] = useState<EditableExpense | null>(null);
 
   const isEmpty =
@@ -100,21 +104,25 @@ export function CategoryTransactionsModal({
               Récurrentes · modifiables depuis l'écran Récurrents
             </h3>
             <ul className="divide-y divide-slate-200 dark:divide-slate-800">
-              {data.recurringOccurrences.map((o) => (
-                <li
-                  key={`${o.templateId}-${o.year}-${o.month}`}
-                  className="flex items-center justify-between py-2.5"
-                >
-                  <div>
-                    <div className="text-sm font-medium">{o.label}</div>
-                    <div className="text-xs text-slate-500">
-                      {MONTH_LABELS[o.month - 1]} {o.year} · le {o.dayOfMonth} du mois
-                      {o.subcategoryName ? ` · ${o.subcategoryName}` : ""}
+              {data.recurringOccurrences.map((o) => {
+                const display = getDisplayPeriod(o.year, o.month, startDay);
+                return (
+                  <li
+                    key={`${o.templateId}-${o.year}-${o.month}`}
+                    className="flex items-center justify-between py-2.5"
+                  >
+                    <div>
+                      <div className="text-sm font-medium">{o.label}</div>
+                      <div className="text-xs text-slate-500">
+                        {MONTH_LABELS[display.month - 1]} {display.year} · le {o.dayOfMonth} du
+                        mois
+                        {o.subcategoryName ? ` · ${o.subcategoryName}` : ""}
+                      </div>
                     </div>
-                  </div>
-                  <div className="font-semibold text-slate-500">{formatEuros(o.amount)}</div>
-                </li>
-              ))}
+                    <div className="font-semibold text-slate-500">{formatEuros(o.amount)}</div>
+                  </li>
+                );
+              })}
             </ul>
           </>
         )}

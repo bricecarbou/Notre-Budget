@@ -8,6 +8,7 @@ import {
   Tooltip,
 } from "recharts";
 import { useChartTokens } from "@/lib/chartTokens";
+import { getDisplayPeriod } from "@/lib/periodLabel";
 import type { MonthlyTrendPoint } from "@/types";
 
 const MONTH_LABELS_SHORT = [
@@ -35,12 +36,21 @@ function CustomTooltip({ active, payload, label }: any) {
   );
 }
 
-export function ExpensesTrendChart({ data }: { data: MonthlyTrendPoint[] }) {
+export function ExpensesTrendChart({
+  data,
+  monthStartDay = 1,
+}: {
+  data: MonthlyTrendPoint[];
+  monthStartDay?: number;
+}) {
   const tokens = useChartTokens();
-  const chartData = data.map((d) => ({
-    label: `${MONTH_LABELS_SHORT[d.month - 1]} ${String(d.year).slice(2)}`,
-    totalDepenses: d.totalDepensesRecurrentes + d.totalDepensesPonctuelles,
-  }));
+  const chartData = data.map((d) => {
+    const display = getDisplayPeriod(d.year, d.month, monthStartDay);
+    return {
+      label: `${MONTH_LABELS_SHORT[display.month - 1]} ${String(display.year).slice(2)}`,
+      totalDepenses: d.totalDepensesRecurrentes + d.totalDepensesPonctuelles,
+    };
+  });
 
   return (
     <div className="h-56 w-full">

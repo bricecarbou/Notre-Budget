@@ -45,6 +45,15 @@ export function Dashboard() {
 
       {dashboard && (
         <>
+          {dashboard.cachedAt && (
+            <p className="mb-2 text-center text-xs text-orange-600 dark:text-orange-400">
+              Hors ligne · données du{" "}
+              {new Date(dashboard.cachedAt).toLocaleTimeString("fr-FR", {
+                hour: "2-digit",
+                minute: "2-digit",
+              })}
+            </p>
+          )}
           <BudgetSummaryCard dashboard={dashboard} />
 
           {!isAdmin && (

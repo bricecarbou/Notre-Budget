@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useMonthStore } from "@/store/monthStore";
+import { useSettings } from "@/hooks/useSettings";
 import { useMonthlyTrend, useByCategory } from "@/hooks/useAnalytics";
 import { MonthSelector } from "@/components/MonthSelector";
 import { ExpensesTrendChart } from "@/components/analytics/ExpensesTrendChart";
@@ -18,6 +19,7 @@ const RANGES = [
 export function Analytics() {
   const [months, setMonths] = useState<(typeof RANGES)[number]["months"]>(1);
   const { year, month } = useMonthStore();
+  const { data: settings } = useSettings();
   const [selectedCategory, setSelectedCategory] = useState<CategoryBreakdown | null>(null);
 
   const { data: breakdown = [], isLoading: breakdownLoading } = useByCategory(year, month, months);
@@ -65,7 +67,9 @@ export function Analytics() {
             Évolution des dépenses
           </h2>
           {trendLoading && <p className="py-8 text-center text-sm text-slate-500">Chargement...</p>}
-          {trend && <ExpensesTrendChart data={trend} />}
+          {trend && (
+            <ExpensesTrendChart data={trend} monthStartDay={settings?.monthStartDay ?? 1} />
+          )}
         </section>
       )}
 
